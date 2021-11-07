@@ -12,12 +12,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ListingHeader() {
-    Surface(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(top = 8.dp, end = 8.dp, start = 8.dp, bottom = 4.dp)) {
             Text("Shader Showcase")
             Text("@thelumiereguy")
         }
-    }
 }
 
 

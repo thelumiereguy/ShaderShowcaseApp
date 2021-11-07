@@ -21,6 +21,7 @@ import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.Sha
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.view.ShaderGLSurfaceView
 import com.thelumiereguy.shadershowcase.features.shaders_listing.data.ShaderFactory
 import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shader
+import com.thelumiereguy.shadershowcase.features.shaders_listing.ui.composable.ListingCard
 import com.thelumiereguy.shadershowcase.features.shaders_listing.ui.composable.ListingHeader
 
 @Composable
@@ -42,26 +43,8 @@ fun ListingPage() {
             }
 
             items(shaders) { item ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillParentMaxHeight(0.6f)
-                        .padding(all = 8.dp),
-                ) {
-                    Box {
-                        AndroidView(factory = {
-                            ShaderGLSurfaceView(it)
-                        }) {
-                            it.setShader(
-                                item.fragmentShader
-                            )
-
-                        }
-                    }
-                    Text(
-                        item.title, modifier = Modifier
-                            .padding(all = 8.dp)
-                    )
+                Box(modifier = Modifier.fillParentMaxHeight(0.9f)) {
+                    ListingCard(item)
                 }
             }
         }

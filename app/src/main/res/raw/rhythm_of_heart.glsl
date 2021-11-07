@@ -33,7 +33,7 @@ void main(){
     **/
     for (int index=1;index<=6;index++){
         float waves1=smoothstep(coord.y,
-        (float(index)*.02*cos(u_time+(coord.x*30.)))-.18,
+        (float(index)*.02*cos((u_time*4.)+(coord.x*30.)))-.18,
         coord.y-.003
         );
         waves1=(waves1-.06)*step(heart, 0.);

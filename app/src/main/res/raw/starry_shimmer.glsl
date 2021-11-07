@@ -24,8 +24,10 @@ const float scaleFactor=20.;
 
 void main(){
     vec2 coord=gl_FragCoord.xy/u_resolution;
-     coord.x*=u_resolution.x/u_resolution.y;
+    coord.x*=u_resolution.x/u_resolution.y;
     vec3 color=vec3(0.);
+
+    coord = coord*rotate(-45.);
 
     //scale coords
     vec2 scaledCoords=coord*scaleFactor;
@@ -35,7 +37,7 @@ void main(){
     scaledCoords.y=fract(scaledCoords.y);
 
     // rotate each coordinate systems
-    scaledCoords=(scaledCoords-.5)*rotate((coord.y)+u_time);
+    scaledCoords=(scaledCoords-.5)*rotate((coord.y)+(u_time*3.));
 
     //then translate back to origin by adding 0.5
     scaledCoords+=vec2(.5);

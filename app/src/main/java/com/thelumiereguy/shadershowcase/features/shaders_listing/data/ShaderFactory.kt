@@ -7,9 +7,34 @@ object ShaderFactory {
 
     fun getShadersList() = listOf(
         Shader(
-            title = "Abstract Stars",
+            title = "Inferno",
             description = "Lorem ipsum text",
-            fragmentShader = R.raw.abstract_stars,
+            fragmentShader = R.raw.inferno,
+        ),
+        Shader(
+            title = "Rhythm of the heart",
+            description = "Lorem ipsum text",
+            fragmentShader = R.raw.rhythm_of_heart,
+        ),
+        Shader(
+            title = "Sineflower",
+            description = "Lorem ipsum text",
+            fragmentShader = R.raw.sine_flower,
+        ),
+        Shader(
+            title = "Strings attached",
+            description = "Lorem ipsum text",
+            fragmentShader = R.raw.strings_attached,
+        ),
+        Shader(
+            title = "Polka Shade",
+            description = "Lorem ipsum text",
+            fragmentShader = R.raw.polka_shade,
+        ),
+        Shader(
+            title = "Starry Shimmer",
+            description = "Lorem ipsum text",
+            fragmentShader = R.raw.starry_shimmer,
         ),
         Shader(
             title = "Digital DNA",
@@ -27,22 +52,7 @@ object ShaderFactory {
             fragmentShader = R.raw.monochrome_iris,
         ),
         Shader(
-            title = "Monochrome Ratio",
-            description = "Lorem ipsum text",
-            fragmentShader = R.raw.monochrome_ratio,
-        ),
-        Shader(
-            title = "Polka Shade",
-            description = "Lorem ipsum text",
-            fragmentShader = R.raw.polka_shade,
-        ),
-        Shader(
-            title = "Rhythm of the heart",
-            description = "Lorem ipsum text",
-            fragmentShader = R.raw.rhythm_of_heart,
-        ),
-        Shader(
-            title = "It's raining shurikens",
+            title = "Raining shurikens",
             description = "Lorem ipsum text",
             fragmentShader = R.raw.shuriken_rain,
         ),
@@ -57,19 +67,9 @@ object ShaderFactory {
             fragmentShader = R.raw.warped_memories,
         ),
         Shader(
-            title = "Sinflower",
+            title = "Monochrome Ratio",
             description = "Lorem ipsum text",
-            fragmentShader = R.raw.trignometric_flower,
+            fragmentShader = R.raw.monochrome_ratio,
         ),
-        Shader(
-            title = "Strings attached",
-            description = "Lorem ipsum text",
-            fragmentShader = R.raw.strings_attached,
-        ),
-        Shader(
-            title = "Inferno",
-            description = "Lorem ipsum text",
-            fragmentShader = R.raw.inferno,
-        )
     )
 }

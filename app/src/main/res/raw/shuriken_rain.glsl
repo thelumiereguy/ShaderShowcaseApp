@@ -18,13 +18,13 @@ void main(){
     vec3 color=vec3(0.);
 
     //scale coordinates
-    coord*=10.;
+    coord*=20.;
 
     vec2 scaledCoords=coord;
 
     //get length from origin
-    float scaledLength=cos(scaledCoords.y+u_time)*.2;
-    float dividedLength=mod(-scaledLength, 4.)/8.;
+    float scaledLength=cos(scaledCoords.y+u_time)*.30;
+    float dividedLength=mod(-scaledLength, 4.5)/8.;
 
     //divide into multiple smaller coordinate systems
     coord=vec2(fract(coord.x), fract(coord.y));

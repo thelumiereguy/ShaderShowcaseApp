@@ -70,14 +70,4 @@ class ShaderGLSurfaceView @JvmOverloads constructor(
         }
         return body.toString()
     }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        Timber.d("ShaderGLSurfaceView onAttach")
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        Timber.d("ShaderGLSurfaceView onDetachedFromWindow")
-    }
 }
