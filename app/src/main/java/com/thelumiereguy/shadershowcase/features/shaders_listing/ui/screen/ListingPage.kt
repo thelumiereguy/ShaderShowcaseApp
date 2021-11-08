@@ -1,6 +1,5 @@
 package com.thelumiereguy.shadershowcase.features.shaders_listing.ui.screen
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +14,6 @@ import com.google.accompanist.insets.ProvideWindowInsets
 import com.thelumiereguy.shadershowcase.features.shaders_listing.data.ShaderFactory
 import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shader
 import com.thelumiereguy.shadershowcase.features.shaders_listing.ui.composable.ListingCard
-import com.thelumiereguy.shadershowcase.features.shaders_listing.ui.composable.ListingHeader
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 
