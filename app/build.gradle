@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id("kotlin-parcelize")
 }
 
 apply from: '../dependencies.gradle'
@@ -91,4 +92,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$versions.composeVersion"
     debugImplementation "androidx.compose.ui:ui-tooling:$versions.composeVersion"
+
+    implementation "dev.chrisbanes.snapper:snapper:0.1.0"
 }

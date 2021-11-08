@@ -32,6 +32,8 @@ class ShaderGLSurfaceView @JvmOverloads constructor(
 //        renderMode = RENDERMODE_WHEN_DIRTY
     }
 
+    private var hasSetShader = false
+
     fun setShader(
         fragmentShaderResource: Int,
         vertexShaderResource: Int = R.raw.simple_vertex_shader,
@@ -39,12 +41,15 @@ class ShaderGLSurfaceView @JvmOverloads constructor(
         val fragmentShader = readTextFileFromResource(fragmentShaderResource)
         val vertexShader = readTextFileFromResource(vertexShaderResource)
 
-        setRenderer(
-            ShaderRenderer(
-                fragmentShader,
-                vertexShader,
+        if (hasSetShader.not())
+            setRenderer(
+                ShaderRenderer(
+                    fragmentShader,
+                    vertexShader,
+                )
             )
-        )
+
+        hasSetShader = true
     }
 
 

@@ -5,70 +5,86 @@ import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shad
 
 object ShaderFactory {
 
+    private const val description =
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+
     fun getShadersList() = listOf(
         Shader(
+            1,
             title = "Inferno",
-            description = "Lorem ipsum text",
+            description = description,
             fragmentShader = R.raw.inferno,
         ),
         Shader(
+            2,
             title = "Rhythm of the heart",
-            description = "Lorem ipsum text",
+            description = description,
             fragmentShader = R.raw.rhythm_of_heart,
         ),
         Shader(
-            title = "Sineflower",
-            description = "Lorem ipsum text",
+            3,
+            title = "Sine-flower",
+            description = description,
             fragmentShader = R.raw.sine_flower,
         ),
         Shader(
+            4,
             title = "Strings attached",
-            description = "Lorem ipsum text",
+            description = description,
             fragmentShader = R.raw.strings_attached,
         ),
         Shader(
+            5,
             title = "Polka Shade",
-            description = "Lorem ipsum text",
+            description = description,
             fragmentShader = R.raw.polka_shade,
         ),
         Shader(
+            6,
             title = "Starry Shimmer",
-            description = "Lorem ipsum text",
+            description = description,
             fragmentShader = R.raw.starry_shimmer,
         ),
         Shader(
+            7,
             title = "Digital DNA",
-            description = "Lorem ipsum text",
+            description = description,
             fragmentShader = R.raw.dna,
         ),
         Shader(
+            8,
             title = "Hypnotising Spiral",
-            description = "Lorem ipsum text",
+            description = description,
             fragmentShader = R.raw.hypnotising_spiral,
         ),
         Shader(
+            9,
             title = "Monochrome Iris",
-            description = "Lorem ipsum text",
+            description = description,
             fragmentShader = R.raw.monochrome_iris,
         ),
         Shader(
+            10,
             title = "Raining shurikens",
-            description = "Lorem ipsum text",
+            description = description,
             fragmentShader = R.raw.shuriken_rain,
         ),
         Shader(
+            11,
             title = "Vortex",
-            description = "Lorem ipsum text",
+            description = description,
             fragmentShader = R.raw.vortex,
         ),
         Shader(
+            12,
             title = "Warped Memories",
-            description = "Lorem ipsum text",
+            description = description,
             fragmentShader = R.raw.warped_memories,
         ),
         Shader(
+            13,
             title = "Monochrome Ratio",
-            description = "Lorem ipsum text",
+            description = description,
             fragmentShader = R.raw.monochrome_ratio,
         ),
     )

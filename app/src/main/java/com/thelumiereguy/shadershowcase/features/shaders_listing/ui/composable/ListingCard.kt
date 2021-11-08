@@ -1,28 +1,38 @@
 package com.thelumiereguy.shadershowcase.features.shaders_listing.ui.composable
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.thelumiereguy.shadershowcase.R
+import com.thelumiereguy.shadershowcase.core.ui.theme.ShaderShowcaseTheme
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.view.ShaderGLSurfaceView
 import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shader
 
 
 @Composable
-fun ListingCard(shader: Shader) {
+fun ListingCard(shader: Shader, onShaderSelected: (Shader) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(all = 8.dp),
+            .padding(horizontal = 8.dp, vertical = 12.dp)
+            .clickable {
+                onShaderSelected(shader)
+            },
     ) {
-        Box(contentAlignment = Alignment.BottomCenter) {
+        Box(
+            contentAlignment = Alignment.BottomCenter,
+        ) {
             AndroidView(factory = {
                 ShaderGLSurfaceView(it)
             }) {
@@ -31,19 +41,54 @@ fun ListingCard(shader: Shader) {
                 )
             }
 
-            Spacer(modifier = Modifier.graphicsLayer {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black
+                            ),
+                            endY = 400f
+                        )
+                    )
+            ) {
 
-            })
+                Spacer(modifier = Modifier.height(60.dp))
+
+                Text(
+                    shader.title,
+                    color = Color(0xFFEBDBC1),
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 2.dp)
+                )
+
+                Text(
+                    shader.description,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color(0xFFEBDBC1),
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier
+                        .padding(start = 16.dp, bottom = 16.dp, end = 16.dp)
+                )
+            }
+
         }
-        Text(
-            shader.title, modifier = Modifier
-                .padding(all = 8.dp)
-        )
     }
 }
 
 @Preview
 @Composable
 fun ListCardPreview() {
-    ListingCard(Shader(fragmentShader = R.raw.starry_shimmer))
+    ShaderShowcaseTheme {
+        ListingCard(
+            Shader.getDefault()
+        ) {
+
+
+        }
+    }
 }
