@@ -17,11 +17,12 @@ class ShaderGLSurfaceView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
 ) : GLSurfaceView(context, attrs) {
 
+
+
     init {
 
         // Create an OpenGL ES 2.0 context
         setEGLContextClientVersion(2)
-
 
         preserveEGLContextOnPause = true
 
@@ -34,45 +35,35 @@ class ShaderGLSurfaceView @JvmOverloads constructor(
 
     private var hasSetShader = false
 
-    fun setShader(
-        fragmentShaderResource: Int,
-        vertexShaderResource: Int = R.raw.simple_vertex_shader,
-    ) {
-        val fragmentShader = readTextFileFromResource(fragmentShaderResource)
-        val vertexShader = readTextFileFromResource(vertexShaderResource)
+    lateinit var renderer2: Renderer
 
-        if (hasSetShader.not())
+    fun setShaderRenderer(
+        renderer: Renderer
+    ) {
+
+
+        if (hasSetShader.not()) {
             setRenderer(
-                ShaderRenderer(
-                    fragmentShader,
-                    vertexShader,
-                )
+                renderer
             )
+            renderer2 = renderer
+        }
 
         hasSetShader = true
     }
 
+    override fun onResume() {
+        super.onResume()
+        Timber.d("ShaderGLSurfaceView onResume")
+    }
 
-    private fun readTextFileFromResource(
-        resourceId: Int
-    ): String {
-        val body = StringBuilder()
-        try {
-            val inputStream = context.resources.openRawResource(resourceId)
-            val inputStreamReader = InputStreamReader(inputStream)
-            val bufferedReader = BufferedReader(inputStreamReader)
-            var nextLine: String?
-            while (bufferedReader.readLine().also { nextLine = it } != null) {
-                body.append(nextLine)
-                body.append('\n')
-            }
-        } catch (e: IOException) {
-            throw RuntimeException(
-                "Could not open resource: $resourceId", e
-            )
-        } catch (nfe: NotFoundException) {
-            throw RuntimeException("Resource not found: $resourceId", nfe)
-        }
-        return body.toString()
+    override fun onPause() {
+        super.onPause()
+        Timber.d("ShaderGLSurfaceView onPause")
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        Timber.d("ShaderGLSurfaceView onDetachedFromWindow")
     }
 }

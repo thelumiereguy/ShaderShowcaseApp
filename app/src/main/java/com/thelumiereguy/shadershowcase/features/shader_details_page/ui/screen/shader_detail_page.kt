@@ -1,23 +1,17 @@
 package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.screen
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,9 +21,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.math.MathUtils
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.thelumiereguy.shadershowcase.R
+import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.view.ShaderGLSurfaceView
 import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shader
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 @ExperimentalMaterialApi
@@ -76,8 +70,12 @@ fun ShaderDetailPage(selectedShader: Shader, onBackPressed: () -> Unit) {
                 AndroidView(factory = {
                     ShaderGLSurfaceView(it)
                 }) {
-                    it.setShader(
-                        selectedShader.fragmentShader
+
+                    it.setShaderRenderer(
+                        ShaderRenderer(
+                            selectedShader.fragmentShader,
+                            selectedShader.vertexShader,
+                        )
                     )
                 }
 

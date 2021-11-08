@@ -3,13 +3,14 @@ package com.thelumiereguy.shadershowcase.core.ui.activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
-import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,9 +19,10 @@ import com.thelumiereguy.shadershowcase.core.ui.navigation.NavScreen
 import com.thelumiereguy.shadershowcase.core.ui.theme.ShaderShowcaseTheme
 import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.screen.ShaderDetailPage
 import com.thelumiereguy.shadershowcase.features.shaders_listing.data.ShaderFactory
-import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shader
+import com.thelumiereguy.shadershowcase.features.shaders_listing.ui.composable.surfaceViewsMap
 import com.thelumiereguy.shadershowcase.features.shaders_listing.ui.screen.ListingPage
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,8 +36,23 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+            (0..surfaceViewsMap.size()).forEach {
+                surfaceViewsMap[it]?.onResume()
+            }
+    }
+
+    override fun onPause() {
+        super.onPause()
+            (0..surfaceViewsMap.size()).forEach {
+                surfaceViewsMap[it]?.onPause()
+            }
+    }
 }
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun ShadersShowcaseApp() {
@@ -62,7 +79,9 @@ fun ShadersShowcaseApp() {
                 backStackEntry.arguments?.getInt(NavScreen.ShaderDetailsPage.arg0)
                     ?: return@composable
 
-            ShaderFactory.getShadersList().find { it.id == shaderId }?.let { shader ->
+            val context = LocalContext.current
+
+            ShaderFactory.getShadersList(context).find { it.id == shaderId }?.let { shader ->
                 ShaderDetailPage(selectedShader = shader) {
                     navController.navigateUp()
                 }
@@ -71,6 +90,7 @@ fun ShadersShowcaseApp() {
     }
 }
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Preview(showBackground = true)
 @Composable

@@ -1,5 +1,6 @@
 package com.thelumiereguy.shadershowcase.features.shaders_listing.ui.composable
 
+import android.util.SparseArray
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,14 +12,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.thelumiereguy.shadershowcase.core.ui.theme.ShaderShowcaseTheme
+import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.view.ShaderGLSurfaceView
 import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shader
 
+val surfaceViewsMap = SparseArray<ShaderGLSurfaceView>()
 
 @Composable
 fun ListingCard(shader: Shader, onShaderSelected: (Shader) -> Unit) {
@@ -34,10 +36,15 @@ fun ListingCard(shader: Shader, onShaderSelected: (Shader) -> Unit) {
             contentAlignment = Alignment.BottomCenter,
         ) {
             AndroidView(factory = {
-                ShaderGLSurfaceView(it)
+                ShaderGLSurfaceView(it).also { view ->
+                    surfaceViewsMap.put(shader.id, view)
+                }
             }) {
-                it.setShader(
-                    shader.fragmentShader
+                it.setShaderRenderer(
+                    ShaderRenderer(
+                        shader.fragmentShader,
+                        shader.vertexShader,
+                    )
                 )
             }
 
@@ -62,18 +69,18 @@ fun ListingCard(shader: Shader, onShaderSelected: (Shader) -> Unit) {
                     color = Color(0xFFEBDBC1),
                     style = MaterialTheme.typography.h6,
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 2.dp)
+                        .padding(horizontal = 16.dp, vertical = 16.dp)
                 )
 
-                Text(
-                    shader.description,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    color = Color(0xFFEBDBC1),
-                    style = MaterialTheme.typography.body2,
-                    modifier = Modifier
-                        .padding(start = 16.dp, bottom = 16.dp, end = 16.dp)
-                )
+//                Text(
+//                    shader.description,
+//                    maxLines = 2,
+//                    overflow = TextOverflow.Ellipsis,
+//                    color = Color(0xFFEBDBC1),
+//                    style = MaterialTheme.typography.body2,
+//                    modifier = Modifier
+//                        .padding(start = 16.dp, bottom = 16.dp, end = 16.dp)
+//                )
             }
 
         }
