@@ -8,7 +8,7 @@ import java.nio.ByteOrder
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class ShaderRenderer(
+open class ShaderRenderer(
     private val fragmentShader: String,
     private val vertexShader: String,
 ) : GLSurfaceView.Renderer {
@@ -36,46 +36,50 @@ class ShaderRenderer(
             }
     }
 
-    private val fragShader by lazy {
-        createAndVerifyShader(fragmentShader, GL_FRAGMENT_SHADER)
-    }
-
-    private val vertShader by lazy {
-        createAndVerifyShader(vertexShader, GL_VERTEX_SHADER)
-    }
-
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(0f, 0f, 0f, 1f)
         glDisable(GL10.GL_DITHER)
         glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST)
 
-        val programId = glCreateProgram()
+        prepareProgram(fragmentShader, vertexShader)
+    }
+
+    var programId: Int? = null
+
+    fun prepareProgram(fragmentShader: String, vertexShader: String) {
+        programId?.let { glDeleteProgram(it) }
+
+        programId = glCreateProgram()
         if (programId == 0) {
             Timber.d("Could not create new program")
         }
 
-        glAttachShader(programId, vertShader)
-        glAttachShader(programId, fragShader)
+        val fragShader = createAndVerifyShader(fragmentShader, GL_FRAGMENT_SHADER)
+        val vertShader = createAndVerifyShader(vertexShader, GL_VERTEX_SHADER)
 
-        glLinkProgram(programId)
+        glAttachShader(programId!!, vertShader)
+        glAttachShader(programId!!, fragShader)
+
+        glLinkProgram(programId!!)
 
         val linkStatus = IntArray(1)
-        glGetProgramiv(programId, GL_LINK_STATUS, linkStatus, 0)
+        glGetProgramiv(programId!!, GL_LINK_STATUS, linkStatus, 0)
 
 
-        Timber.d(glGetProgramInfoLog(programId))
+        Timber.d(glGetProgramInfoLog(programId!!))
 
         if (linkStatus[0] == 0) {
-            glDeleteProgram(programId)
+            glDeleteProgram(programId!!)
+            return
             Timber.d("Linking of program failed.");
         }
 
-        if (validateProgram(programId)) {
-            attribLocation = glGetAttribLocation(programId, "a_Position")
-            uniformLocation = glGetUniformLocation(programId, "u_Color")
-            resolutionUniformLocation = glGetUniformLocation(programId, "u_resolution")
-            timeUniformLocation = glGetUniformLocation(programId, "u_time")
+        if (validateProgram(programId!!)) {
+            attribLocation = glGetAttribLocation(programId!!, "a_Position")
+            uniformLocation = glGetUniformLocation(programId!!, "u_Color")
+            resolutionUniformLocation = glGetUniformLocation(programId!!, "u_resolution")
+            timeUniformLocation = glGetUniformLocation(programId!!, "u_time")
         } else {
             Timber.d("Validating of program failed.");
             return
@@ -94,7 +98,10 @@ class ShaderRenderer(
 
         glEnableVertexAttribArray(attribLocation!!)
 
-        glUseProgram(programId)
+        glDetachShader(programId!!, vertShader)
+        glDetachShader(programId!!, fragShader)
+        glDeleteShader(vertShader)
+        glDeleteShader(fragShader)
     }
 
     var attribLocation: Int? = null
@@ -114,6 +121,7 @@ class ShaderRenderer(
 //        gl?.glLoadIdentity()                            // reset the matrix to its default state
 //        gl?.glFrustumf(-aspectRatio, aspectRatio, -1f, 1f, 3f, 7f)  // apply the projection matrix
         frameCount = 0f
+        prepareProgram(fragmentShader, vertexShader)
     }
 
     private var frameCount = 0f
@@ -121,6 +129,7 @@ class ShaderRenderer(
     override fun onDrawFrame(gl: GL10?) {
         glDisable(GL10.GL_DITHER)
         glClear(GL10.GL_COLOR_BUFFER_BIT)
+        glUseProgram(programId!!)
 
         uniformLocation?.let {
             glUniform4f(it, 1f, 1f, 1f, 1f)

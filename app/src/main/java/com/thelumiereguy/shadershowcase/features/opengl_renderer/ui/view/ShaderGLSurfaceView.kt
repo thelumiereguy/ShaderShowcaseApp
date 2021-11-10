@@ -1,23 +1,15 @@
 package com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.view
 
 import android.content.Context
-import android.content.res.Resources.NotFoundException
 import android.opengl.GLSurfaceView
 import android.util.AttributeSet
-import com.thelumiereguy.shadershowcase.R
-import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
 import timber.log.Timber
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
 
 
 class ShaderGLSurfaceView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
 ) : GLSurfaceView(context, attrs) {
-
-
 
     init {
 
@@ -35,19 +27,14 @@ class ShaderGLSurfaceView @JvmOverloads constructor(
 
     private var hasSetShader = false
 
-    lateinit var renderer2: Renderer
-
     fun setShaderRenderer(
         renderer: Renderer
     ) {
 
-
-        if (hasSetShader.not()) {
+        if (hasSetShader.not())
             setRenderer(
                 renderer
             )
-            renderer2 = renderer
-        }
 
         hasSetShader = true
     }

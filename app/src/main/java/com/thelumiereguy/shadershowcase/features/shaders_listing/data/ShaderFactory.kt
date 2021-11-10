@@ -13,99 +13,102 @@ object ShaderFactory {
     private const val description =
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
 
-    fun getShadersList(context: Context) = listOf(
-        Shader(
-            1,
-            title = "Inferno",
-            description = description,
-            fragmentShader = context.readTextFileFromResource(R.raw.inferno),
-            vertexShader = context.readTextFileFromResource(R.raw.simple_vertex_shader),
-        ),
-        Shader(
-            2,
-            title = "Rhythm of the heart",
-            description = description,
-            fragmentShader = context.readTextFileFromResource(R.raw.rhythm_of_heart),
-            vertexShader = context.readTextFileFromResource(R.raw.simple_vertex_shader),
-        ),
-        Shader(
-            3,
-            title = "Sine-flower",
-            description = description,
-            fragmentShader = context.readTextFileFromResource(R.raw.sine_flower),
-            vertexShader = context.readTextFileFromResource(R.raw.simple_vertex_shader),
-        ),
-        Shader(
-            4,
-            title = "Strings attached",
-            description = description,
-            fragmentShader = context.readTextFileFromResource(R.raw.strings_attached),
-            vertexShader = context.readTextFileFromResource(R.raw.simple_vertex_shader),
-        ),
-        Shader(
-            5,
-            title = "Polka Shade",
-            description = description,
-            fragmentShader = context.readTextFileFromResource(R.raw.polka_shade),
-            vertexShader = context.readTextFileFromResource(R.raw.simple_vertex_shader),
-        ),
-        Shader(
-            6,
-            title = "Starry Shimmer",
-            description = description,
-            fragmentShader = context.readTextFileFromResource(R.raw.starry_shimmer),
-            vertexShader = context.readTextFileFromResource(R.raw.simple_vertex_shader),
-        ),
-        Shader(
-            7,
-            title = "Digital DNA",
-            description = description,
-            fragmentShader = context.readTextFileFromResource(R.raw.dna),
-            vertexShader = context.readTextFileFromResource(R.raw.simple_vertex_shader),
-        ),
-        Shader(
-            8,
-            title = "Hypnotising Spiral",
-            description = description,
-            fragmentShader = context.readTextFileFromResource(R.raw.hypnotising_spiral),
-            vertexShader = context.readTextFileFromResource(R.raw.simple_vertex_shader),
-        ),
-        Shader(
-            9,
-            title = "Monochrome Iris",
-            description = description,
-            fragmentShader = context.readTextFileFromResource(R.raw.monochrome_iris),
-            vertexShader = context.readTextFileFromResource(R.raw.simple_vertex_shader),
-        ),
-        Shader(
-            10,
-            title = "Raining shurikens",
-            description = description,
-            fragmentShader = context.readTextFileFromResource(R.raw.shuriken_rain),
-            vertexShader = context.readTextFileFromResource(R.raw.simple_vertex_shader),
-        ),
-        Shader(
-            11,
-            title = "Vortex",
-            description = description,
-            fragmentShader = context.readTextFileFromResource(R.raw.vortex),
-            vertexShader = context.readTextFileFromResource(R.raw.simple_vertex_shader),
-        ),
-        Shader(
-            12,
-            title = "Warped Memories",
-            description = description,
-            fragmentShader = context.readTextFileFromResource(R.raw.warped_memories),
-            vertexShader = context.readTextFileFromResource(R.raw.simple_vertex_shader),
-        ),
-        Shader(
-            13,
-            title = "Monochrome Ratio",
-            description = description,
-            fragmentShader = context.readTextFileFromResource(R.raw.monochrome_ratio),
-            vertexShader = context.readTextFileFromResource(R.raw.simple_vertex_shader),
-        ),
-    )
+    fun getShadersList(context: Context): List<Shader> {
+        val vertexShader = context.readTextFileFromResource(R.raw.simple_vertex_shader)
+        return listOf(
+            Shader(
+                0,
+                title = "Inferno",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.inferno),
+                vertexShader = vertexShader
+            ),
+            Shader(
+                1,
+                title = "Rhythm of the heart",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.rhythm_of_heart),
+                vertexShader = vertexShader
+            ),
+            Shader(
+                2,
+                title = "Sine-flower",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.sine_flower),
+                vertexShader = vertexShader
+            ),
+            Shader(
+                3,
+                title = "Strings attached",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.strings_attached),
+                vertexShader = vertexShader
+            ),
+            Shader(
+                4,
+                title = "Polka Shade",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.polka_shade),
+                vertexShader = vertexShader
+            ),
+            Shader(
+                5,
+                title = "Starry Shimmer",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.starry_shimmer),
+                vertexShader = vertexShader
+            ),
+            Shader(
+                6,
+                title = "Digital DNA",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.dna),
+                vertexShader = vertexShader
+            ),
+            Shader(
+                7,
+                title = "Hypnotising Spiral",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.hypnotising_spiral),
+                vertexShader = vertexShader
+            ),
+            Shader(
+                8,
+                title = "Monochrome Iris",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.monochrome_iris),
+                vertexShader = vertexShader
+            ),
+            Shader(
+                9,
+                title = "Raining shurikens",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.shuriken_rain),
+                vertexShader = vertexShader
+            ),
+            Shader(
+                10,
+                title = "Vortex",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.vortex),
+                vertexShader = vertexShader
+            ),
+            Shader(
+                11,
+                title = "Warped Memories",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.warped_memories),
+                vertexShader = vertexShader
+            ),
+            Shader(
+                12,
+                title = "Monochrome Ratio",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.monochrome_ratio),
+                vertexShader = vertexShader
+            ),
+        )
+    }
 
 
     private fun Context.readTextFileFromResource(

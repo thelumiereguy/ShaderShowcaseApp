@@ -1,5 +1,8 @@
 package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.screen
 
+import android.app.WallpaperManager
+import android.content.ComponentName
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
@@ -7,11 +10,13 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,11 +25,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.math.MathUtils
 import com.google.accompanist.insets.ProvideWindowInsets
-import com.thelumiereguy.shadershowcase.R
+import com.thelumiereguy.shadershowcase.core.data.local.PreferenceManager.setSelectedShader
+import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service.ShaderShowcaseWallpaperService
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.view.ShaderGLSurfaceView
 import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shader
+import java.io.IOException
 import kotlin.math.roundToInt
+
 
 @ExperimentalMaterialApi
 @Composable
@@ -81,21 +89,23 @@ fun ShaderDetailPage(selectedShader: Shader, onBackPressed: () -> Unit) {
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth().background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                Color.Black
-                            ),
-                            endY = 400f
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Transparent,
+                                    Color.Black
+                                ),
+                                endY = 400f
+                            )
                         )
-                    )
                 ) {
 
                     Spacer(modifier = Modifier.height(60.dp))
 
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_double_down),
+                        painter = painterResource(id = com.thelumiereguy.shadershowcase.R.drawable.ic_double_down),
                         contentDescription = "Scroll to show or hide options",
                         modifier = Modifier
                             .size(16.dp)
@@ -135,8 +145,30 @@ fun ShaderDetailPage(selectedShader: Shader, onBackPressed: () -> Unit) {
                     .fillMaxWidth()
                     .offset { IntOffset(0, (swipeableState.offset.value).roundToInt()) }
             ) {
+                val context = LocalContext.current
+
+                val coroutineScope = rememberCoroutineScope()
                 Button(
-                    onClick = {}, modifier = Modifier
+                    onClick = {
+                        try {
+                            coroutineScope.setSelectedShader(
+                                context,
+                                selectedShader.id
+                            )
+
+                            val intent = Intent()
+                            intent.action = WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER
+                            intent.putExtra(
+                                WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+                                ComponentName(context, ShaderShowcaseWallpaperService::class.java)
+                            )
+                            context.startActivity(intent)
+
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+
+                    }, modifier = Modifier
                         .padding(all = 16.dp)
                         .height(36.dp)
                 ) {
