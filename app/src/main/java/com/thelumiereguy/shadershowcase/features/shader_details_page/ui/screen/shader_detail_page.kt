@@ -1,8 +1,5 @@
 package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.screen
 
-import android.app.WallpaperManager
-import android.content.ComponentName
-import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
@@ -24,7 +21,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.math.MathUtils
-import com.google.accompanist.insets.ProvideWindowInsets
 import com.thelumiereguy.shadershowcase.core.data.local.PreferenceManager.setSelectedShader
 import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service.ShaderShowcaseWallpaperService
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
@@ -36,158 +32,156 @@ import kotlin.math.roundToInt
 
 @ExperimentalMaterialApi
 @Composable
-fun ShaderDetailPage(selectedShader: Shader, onBackPressed: () -> Unit) {
-    ProvideWindowInsets {
+fun ShaderDetailPage(selectedShader: Shader, modifier: Modifier = Modifier) {
 
-        val showMenu = remember {
-            mutableStateOf(false)
+    val (snackBarVisibleState, setSnackBarState) = remember { mutableStateOf(false) }
+
+    val showMenu = remember {
+        mutableStateOf(false)
+    }
+
+    val swipeableState = rememberSwipeableState(0) { state ->
+        showMenu.value = state == 1
+        true
+    }
+
+    val sizePx = with(LocalDensity.current) { 50.dp.toPx() }
+
+    val anchors = mapOf(sizePx to 0, 0f to 1) // Maps anchor points (in px) to states
+
+    Column(
+        modifier = modifier
+            .swipeable(
+                swipeableState,
+                anchors = anchors,
+                orientation = Orientation.Vertical
+            )
+            .offset { IntOffset(0, (swipeableState.offset.value - sizePx).roundToInt()) }
+    ) {
+        val shaderView = remember {
+            ShaderRenderer().apply {
+                setShaders(
+                    selectedShader.fragmentShader,
+                    selectedShader.vertexShader,
+                )
+            }
         }
 
-        val swipeableState = rememberSwipeableState(0) { state ->
-            showMenu.value = state == 1
-            true
-        }
-
-        val sizePx = with(LocalDensity.current) { 50.dp.toPx() }
-
-        val anchors = mapOf(sizePx to 0, 0f to 1) // Maps anchor points (in px) to states
-
-        Column(
+        Box(
+            contentAlignment = Alignment.BottomCenter,
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .swipeable(
-                    swipeableState,
-                    anchors = anchors,
-                    orientation = Orientation.Vertical
-                )
-                .offset { IntOffset(0, (swipeableState.offset.value - sizePx).roundToInt()) }
+                .offset {
+                    IntOffset(
+                        0,
+                        ((swipeableState.offset.value - sizePx) * 0.9f).roundToInt()
+                    )
+                }
         ) {
-            Box(
-                contentAlignment = Alignment.BottomCenter,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .offset {
-                        IntOffset(
-                            0,
-                            ((swipeableState.offset.value - sizePx) * 0.9f).roundToInt()
-                        )
-                    }
-            ) {
-                AndroidView(factory = {
-                    ShaderGLSurfaceView(it)
-                }) {
-
-                    it.setShaderRenderer(
-                        ShaderRenderer(
-                            selectedShader.fragmentShader,
-                            selectedShader.vertexShader,
-                        )
-                    )
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    Color.Black
-                                ),
-                                endY = 400f
-                            )
-                        )
-                ) {
-
-                    Spacer(modifier = Modifier.height(60.dp))
-
-                    Icon(
-                        painter = painterResource(id = com.thelumiereguy.shadershowcase.R.drawable.ic_double_down),
-                        contentDescription = "Scroll to show or hide options",
-                        modifier = Modifier
-                            .size(16.dp)
-                            .rotate(
-                                MathUtils.clamp(
-                                    map(
-                                        swipeableState.offset.value,
-                                        sizePx,
-                                        0f,
-                                        180f,
-                                        0f
-                                    ),
-                                    0f,
-                                    180f
-                                )
-                            )
-                    )
-
-                    Spacer(modifier = Modifier.height(14.dp))
-
-                    Text(
-                        text = if (showMenu.value) {
-                            "Hide Option"
-                        } else {
-                            "Show Option"
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
+            AndroidView(factory = {
+                ShaderGLSurfaceView(it)
+            }) {
+                it.setShaderRenderer(
+                    shaderView
+                )
             }
 
-            Surface(
-                color = Color.Black,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .requiredHeight(100.dp)
                     .fillMaxWidth()
-                    .offset { IntOffset(0, (swipeableState.offset.value).roundToInt()) }
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black
+                            ),
+                            endY = 400f
+                        )
+                    )
             ) {
-                val context = LocalContext.current
 
-                val coroutineScope = rememberCoroutineScope()
-                Button(
-                    onClick = {
-                        try {
-                            coroutineScope.setSelectedShader(
-                                context,
-                                selectedShader.id
+                Spacer(modifier = Modifier.height(60.dp))
+
+                Icon(
+                    painter = painterResource(id = com.thelumiereguy.shadershowcase.R.drawable.ic_double_down),
+                    contentDescription = "Scroll to show or hide options",
+                    modifier = Modifier
+                        .size(16.dp)
+                        .rotate(
+                            MathUtils.clamp(
+                                map(
+                                    swipeableState.offset.value,
+                                    sizePx,
+                                    0f,
+                                    180f,
+                                    0f
+                                ),
+                                0f,
+                                180f
                             )
+                        )
+                )
 
-                            val intent = Intent()
-                            intent.action = WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER
-                            intent.putExtra(
-                                WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
-                                ComponentName(context, ShaderShowcaseWallpaperService::class.java)
-                            )
-                            context.startActivity(intent)
+                Spacer(modifier = Modifier.height(14.dp))
 
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
+                Text(
+                    text = if (showMenu.value) {
+                        "Hide Option"
+                    } else {
+                        "Show Option"
+                    }
+                )
 
-                    }, modifier = Modifier
-                        .padding(all = 16.dp)
-                        .height(36.dp)
-                ) {
-                    Text(text = "Set as LiveWallpaper")
-                }
+                Spacer(modifier = Modifier.height(20.dp))
             }
         }
 
-    }
-}
+        Surface(
+            color = Color.Black,
+            modifier = Modifier
+                .requiredHeight(100.dp)
+                .fillMaxWidth()
+                .offset { IntOffset(0, (swipeableState.offset.value).roundToInt()) }
+        ) {
+            val context = LocalContext.current
 
-private fun map(
-    value: Float,
-    startRangeMin: Float,
-    startRangeMax: Float,
-    endRangeMin: Float,
-    endRangeMax: Float
-): Float {
-    return (value - startRangeMin) / (startRangeMax - startRangeMin) * (endRangeMax - endRangeMin) + endRangeMin;
+            val coroutineScope = rememberCoroutineScope()
+            Button(
+                onClick = {
+                    try {
+                        coroutineScope.setSelectedShader(
+                            context,
+                            selectedShader.id
+                        )
+
+                        if (!ShaderShowcaseWallpaperService.isRunning())
+                            context.openLiveWallpaperChooser()
+                        else
+                            setSnackBarState(!snackBarVisibleState)
+
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+
+                }, modifier = Modifier
+                    .padding(all = 16.dp)
+                    .height(36.dp)
+            ) {
+                Text(text = "Set as LiveWallpaper")
+            }
+
+        }
+    }
+
+    if (snackBarVisibleState) {
+        Snackbar(
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Text(text = "${selectedShader.title} set as Wallpaper!")
+        }
+    }
 }
 
 
@@ -195,5 +189,5 @@ private fun map(
 @Preview
 @Composable
 fun ShaderDetailPagePreview() {
-    ShaderDetailPage(Shader.getDefault()) {}
+    ShaderDetailPage(Shader.getDefault())
 }

@@ -86,11 +86,9 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
 
                         if (frag.isNotEmpty() && vertex.isNotEmpty())
                             setRenderer(
-                                LiveWallpaperShaderRenderer(
-                                    frag,
-                                    vertex,
-                                    applicationContext
+                                ShaderRenderer(
                                 ).also {
+                                    it.setShaders(frag, vertex)
                                     shaderRenderer = it
                                 }
                             )
@@ -110,7 +108,7 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
                     Timber.d("observeSelectedShaderChanges   $it")
                     val newFragShader = newShader.fragmentShader
                     val newVertexShader = newShader.vertexShader
-                    shaderRenderer?.prepareProgram(newFragShader, newVertexShader)
+                    shaderRenderer?.setShaders(newFragShader, newVertexShader)
                 }
 
             }
@@ -139,6 +137,9 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
             Timber.d("WallpaperEngine onDestroy")
             lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
             glSurfaceView?.onDestroy()
+
+            glSurfaceView = null
+            shaderRenderer = null
 //            shaderRenderer?.release()
         }
 

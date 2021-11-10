@@ -41,10 +41,12 @@ fun ListingCard(shader: Shader, onShaderSelected: (Shader) -> Unit) {
                 }
             }) {
                 it.setShaderRenderer(
-                    ShaderRenderer(
-                        shader.fragmentShader,
-                        shader.vertexShader,
-                    )
+                    ShaderRenderer().apply {
+                        setShaders(
+                            shader.fragmentShader,
+                            shader.vertexShader,
+                        )
+                    }
                 )
             }
 

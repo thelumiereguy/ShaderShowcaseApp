@@ -15,7 +15,7 @@ class LiveWallpaperShaderRenderer(
     fragmentShader: String,
     vertexShader: String,
     private var context: Context?,
-) : ShaderRenderer(fragmentShader, vertexShader) {
+) : ShaderRenderer() {
 
     private val shaders by lazy {
         ShaderFactory.getShadersList(context!!)

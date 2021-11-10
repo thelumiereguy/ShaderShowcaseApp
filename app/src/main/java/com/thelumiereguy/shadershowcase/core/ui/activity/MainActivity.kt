@@ -8,7 +8,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -17,8 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.thelumiereguy.shadershowcase.core.ui.navigation.NavScreen
 import com.thelumiereguy.shadershowcase.core.ui.theme.ShaderShowcaseTheme
-import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.screen.ShaderDetailPage
-import com.thelumiereguy.shadershowcase.features.shaders_listing.data.ShaderFactory
+import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.screen.ShaderDetailListing
 import com.thelumiereguy.shadershowcase.features.shaders_listing.ui.composable.surfaceViewsMap
 import com.thelumiereguy.shadershowcase.features.shaders_listing.ui.screen.ListingPage
 
@@ -39,16 +37,16 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-            (0..surfaceViewsMap.size()).forEach {
-                surfaceViewsMap[it]?.onResume()
-            }
+        (0..surfaceViewsMap.size()).forEach {
+            surfaceViewsMap[it]?.onResume()
+        }
     }
 
     override fun onPause() {
         super.onPause()
-            (0..surfaceViewsMap.size()).forEach {
-                surfaceViewsMap[it]?.onPause()
-            }
+        (0..surfaceViewsMap.size()).forEach {
+            surfaceViewsMap[it]?.onPause()
+        }
     }
 }
 
@@ -79,13 +77,16 @@ fun ShadersShowcaseApp() {
                 backStackEntry.arguments?.getInt(NavScreen.ShaderDetailsPage.arg0)
                     ?: return@composable
 
-            val context = LocalContext.current
+//            val context = LocalContext.current
 
-            ShaderFactory.getShadersList(context).find { it.id == shaderId }?.let { shader ->
-                ShaderDetailPage(selectedShader = shader) {
-                    navController.navigateUp()
-                }
+//            ShaderFactory.getShadersList(context).find { it.id == shaderId }?.let { shader ->
+//                ShaderDetailPage(selectedShader = shader) {
+//                    navController.navigateUp()
+//                }
+            ShaderDetailListing(selectedShaderId = shaderId) {
+                navController.navigateUp()
             }
+//            }
         }
     }
 }

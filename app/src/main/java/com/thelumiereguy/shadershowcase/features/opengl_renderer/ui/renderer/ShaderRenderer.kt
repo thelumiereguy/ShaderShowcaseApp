@@ -5,15 +5,13 @@ import android.opengl.GLSurfaceView
 import timber.log.Timber
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-open class ShaderRenderer(
-    private val fragmentShader: String,
-    private val vertexShader: String,
-) : GLSurfaceView.Renderer {
+open class ShaderRenderer : GLSurfaceView.Renderer {
 
-    private val POSITION_COMPONENT_COUNT = 2
+    private val positionComponentCount = 2
 
     private val tableVertices by lazy {
         floatArrayOf(
@@ -28,7 +26,7 @@ open class ShaderRenderer(
 
     private val bytesPerFloat = 4
 
-    val verticesData by lazy {
+    private val verticesData by lazy {
         ByteBuffer.allocateDirect(tableVertices.size * bytesPerFloat)
             .order(ByteOrder.nativeOrder())
             .asFloatBuffer().also {
@@ -41,73 +39,83 @@ open class ShaderRenderer(
         glClearColor(0f, 0f, 0f, 1f)
         glDisable(GL10.GL_DITHER)
         glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST)
-
-        prepareProgram(fragmentShader, vertexShader)
     }
+
+    private val isProgramChanged = AtomicBoolean(false)
 
     var programId: Int? = null
 
-    fun prepareProgram(fragmentShader: String, vertexShader: String) {
-        programId?.let { glDeleteProgram(it) }
+    private lateinit var fragmentShader: String
+    private lateinit var vertexShader: String
 
-        programId = glCreateProgram()
-        if (programId == 0) {
-            Timber.d("Could not create new program")
-        }
-
-        val fragShader = createAndVerifyShader(fragmentShader, GL_FRAGMENT_SHADER)
-        val vertShader = createAndVerifyShader(vertexShader, GL_VERTEX_SHADER)
-
-        glAttachShader(programId!!, vertShader)
-        glAttachShader(programId!!, fragShader)
-
-        glLinkProgram(programId!!)
-
-        val linkStatus = IntArray(1)
-        glGetProgramiv(programId!!, GL_LINK_STATUS, linkStatus, 0)
-
-
-        Timber.d(glGetProgramInfoLog(programId!!))
-
-        if (linkStatus[0] == 0) {
-            glDeleteProgram(programId!!)
-            return
-            Timber.d("Linking of program failed.");
-        }
-
-        if (validateProgram(programId!!)) {
-            attribLocation = glGetAttribLocation(programId!!, "a_Position")
-            uniformLocation = glGetUniformLocation(programId!!, "u_Color")
-            resolutionUniformLocation = glGetUniformLocation(programId!!, "u_resolution")
-            timeUniformLocation = glGetUniformLocation(programId!!, "u_time")
-        } else {
-            Timber.d("Validating of program failed.");
-            return
-        }
-
-        verticesData.position(0)
-
-        glVertexAttribPointer(
-            attribLocation!!,
-            POSITION_COMPONENT_COUNT,
-            GL_FLOAT,
-            false,
-            0,
-            verticesData
-        )
-
-        glEnableVertexAttribArray(attribLocation!!)
-
-        glDetachShader(programId!!, vertShader)
-        glDetachShader(programId!!, fragShader)
-        glDeleteShader(vertShader)
-        glDeleteShader(fragShader)
+    fun setShaders(fragmentShader: String, vertexShader: String) {
+        this.fragmentShader = fragmentShader
+        this.vertexShader = vertexShader
+        isProgramChanged.compareAndSet(false, true)
     }
 
-    var attribLocation: Int? = null
-    var uniformLocation: Int? = null
-    var resolutionUniformLocation: Int? = null
-    var timeUniformLocation: Int? = null
+    private fun setupProgram() {
+        programId?.let { glDeleteProgram(it) }
+
+        programId = glCreateProgram().also { newProgramId ->
+            if (programId == 0) {
+                Timber.d("Could not create new program")
+                return
+            }
+
+            val fragShader = createAndVerifyShader(fragmentShader, GL_FRAGMENT_SHADER)
+            val vertShader = createAndVerifyShader(vertexShader, GL_VERTEX_SHADER)
+
+            glAttachShader(newProgramId, vertShader)
+            glAttachShader(newProgramId, fragShader)
+
+            glLinkProgram(newProgramId)
+
+            val linkStatus = IntArray(1)
+            glGetProgramiv(newProgramId, GL_LINK_STATUS, linkStatus, 0)
+
+            if (linkStatus[0] == 0) {
+                glDeleteProgram(newProgramId)
+                Timber.d("Linking of program failed. ${glGetProgramInfoLog(newProgramId)}")
+                return
+            }
+
+            if (validateProgram(newProgramId)) {
+                positionAttributeLocation = glGetAttribLocation(newProgramId, "a_Position")
+                resolutionUniformLocation = glGetUniformLocation(newProgramId, "u_resolution")
+                timeUniformLocation = glGetUniformLocation(newProgramId, "u_time")
+            } else {
+                Timber.d("Validating of program failed.");
+                return
+            }
+
+            verticesData.position(0)
+
+            positionAttributeLocation?.let { attribLocation ->
+                glVertexAttribPointer(
+                    attribLocation,
+                    positionComponentCount,
+                    GL_FLOAT,
+                    false,
+                    0,
+                    verticesData
+                )
+
+                glEnableVertexAttribArray(attribLocation)
+            }
+
+            glUseProgram(newProgramId)
+
+            glDetachShader(newProgramId, vertShader)
+            glDetachShader(newProgramId, fragShader)
+            glDeleteShader(vertShader)
+            glDeleteShader(fragShader)
+        }
+    }
+
+    private var positionAttributeLocation: Int? = null
+    private var resolutionUniformLocation: Int? = null
+    private var timeUniformLocation: Int? = null
 
     private var surfaceHeight = 0f
     private var surfaceWidth = 0f
@@ -116,12 +124,7 @@ open class ShaderRenderer(
         glViewport(0, 0, width, height)
         surfaceWidth = width.toFloat()
         surfaceHeight = height.toFloat()
-//        val aspectRatio = (width / height).toFloat()
-//        gl?.glMatrixMode(GL10.GL_PROJECTION)            // set matrix to projection mode
-//        gl?.glLoadIdentity()                            // reset the matrix to its default state
-//        gl?.glFrustumf(-aspectRatio, aspectRatio, -1f, 1f, 3f, 7f)  // apply the projection matrix
         frameCount = 0f
-        prepareProgram(fragmentShader, vertexShader)
     }
 
     private var frameCount = 0f
@@ -129,10 +132,9 @@ open class ShaderRenderer(
     override fun onDrawFrame(gl: GL10?) {
         glDisable(GL10.GL_DITHER)
         glClear(GL10.GL_COLOR_BUFFER_BIT)
-        glUseProgram(programId!!)
 
-        uniformLocation?.let {
-            glUniform4f(it, 1f, 1f, 1f, 1f)
+        if (isProgramChanged.getAndSet(false)) {
+            setupProgram()
         }
 
         resolutionUniformLocation?.let {
@@ -144,6 +146,8 @@ open class ShaderRenderer(
         }
 
         glDrawArrays(GL_TRIANGLE_FAN, 0, 6)
+
+        glFinish()
 
         if (frameCount > 25) {
             frameCount = 0f
@@ -168,26 +172,4 @@ open class ShaderRenderer(
 
         return validateStatus[0] != 0
     }
-
-    private fun createAndVerifyShader(shaderCode: String, shaderType: Int): Int {
-        val shaderId = glCreateShader(shaderType)
-        if (shaderId == 0) {
-            Timber.d("Create Shader failed")
-        }
-
-        glShaderSource(shaderId, shaderCode)
-        glCompileShader(shaderId)
-
-        val compileStatusArray = IntArray(1)
-        glGetShaderiv(shaderId, GL_COMPILE_STATUS, compileStatusArray, 0)
-        Timber.d(" \n $shaderCode \n :  ${glGetShaderInfoLog(shaderId)}")
-
-        if (compileStatusArray.first() == 0) {
-            glDeleteShader(shaderId)
-            return 0
-        }
-
-        return shaderId
-    }
-
 }
