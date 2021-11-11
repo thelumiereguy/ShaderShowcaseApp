@@ -84,6 +84,11 @@ dependencies {
 
 
     implementation "com.google.accompanist:accompanist-insets:$versions.accompanistVersion"
+    implementation "com.google.accompanist:accompanist-navigation-animation:$versions.accompanistVersion"
+    implementation "com.google.accompanist:accompanist-pager:$versions.accompanistVersion"
+
+    // If using indicators, also depend on
+    implementation "com.google.accompanist:accompanist-pager-indicators:$versions.accompanistVersion"
 
     implementation "com.jakewharton.timber:timber:$versions.timberVersion"
 
@@ -92,8 +97,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$versions.composeVersion"
     debugImplementation "androidx.compose.ui:ui-tooling:$versions.composeVersion"
-
-    implementation "dev.chrisbanes.snapper:snapper:0.1.0"
 
     implementation 'androidx.palette:palette-ktx:1.0.0'
 

@@ -26,7 +26,6 @@ val surfaceViewsMap = SparseArray<ShaderGLSurfaceView>()
 fun ListingCard(shader: Shader, onShaderSelected: (Shader) -> Unit) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 12.dp)
             .clickable {
                 onShaderSelected(shader)
@@ -73,16 +72,6 @@ fun ListingCard(shader: Shader, onShaderSelected: (Shader) -> Unit) {
                     modifier = Modifier
                         .padding(horizontal = 16.dp, vertical = 16.dp)
                 )
-
-//                Text(
-//                    shader.description,
-//                    maxLines = 2,
-//                    overflow = TextOverflow.Ellipsis,
-//                    color = Color(0xFFEBDBC1),
-//                    style = MaterialTheme.typography.body2,
-//                    modifier = Modifier
-//                        .padding(start = 16.dp, bottom = 16.dp, end = 16.dp)
-//                )
             }
 
         }
