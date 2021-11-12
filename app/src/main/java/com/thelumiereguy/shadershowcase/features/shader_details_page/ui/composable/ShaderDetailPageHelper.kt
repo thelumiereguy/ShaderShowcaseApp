@@ -1,4 +1,4 @@
-package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.screen
+package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable
 
 import android.app.WallpaperManager
 import android.content.ComponentName

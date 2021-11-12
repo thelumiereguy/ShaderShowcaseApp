@@ -1,4 +1,4 @@
-package com.thelumiereguy.shadershowcase.core.ui.activity
+package com.thelumiereguy.shadershowcase.core.ui.navigation
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -21,10 +21,24 @@ fun NavGraphBuilder.composableSlide(
         route,
         arguments,
         enterTransition = {
-            slideInHorizontally(initialOffsetX = { 1500 }, animationSpec = tween(250))
+            slideInHorizontally(
+                initialOffsetX = { 1500 }, animationSpec = tween(200)
+            )
+        },
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { -1500 }, animationSpec = tween(200)
+            )
+        },
+        popEnterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { -1500 }, animationSpec = tween(200)
+            )
         },
         popExitTransition = {
-            slideOutHorizontally(targetOffsetX = { 1500 }, animationSpec = tween(250))
+            slideOutHorizontally(
+                targetOffsetX = { 1500 }, animationSpec = tween(200)
+            )
         },
         content = content
     )

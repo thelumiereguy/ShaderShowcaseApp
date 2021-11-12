@@ -16,6 +16,7 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.thelumiereguy.shadershowcase.core.ui.navigation.NavScreen
+import com.thelumiereguy.shadershowcase.core.ui.navigation.composableSlide
 import com.thelumiereguy.shadershowcase.core.ui.theme.ShaderShowcaseTheme
 import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.screen.ShaderDetailListing
 import com.thelumiereguy.shadershowcase.features.shaders_listing.ui.composable.surfaceViewsMap

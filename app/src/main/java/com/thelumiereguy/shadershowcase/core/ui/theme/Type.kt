@@ -19,6 +19,12 @@ private val BlackMango = FontFamily(
 
 // Set of Material typography styles to start with
 val Typography = Typography(
+    h5 = TextStyle(
+        fontFamily = BlackMango,
+        fontWeight = FontWeight.Normal,
+        fontSize = 24.sp,
+        letterSpacing = 0.sp
+    ),
     h6 = TextStyle(
         fontFamily = BlackMango,
         fontSize = 20.sp,

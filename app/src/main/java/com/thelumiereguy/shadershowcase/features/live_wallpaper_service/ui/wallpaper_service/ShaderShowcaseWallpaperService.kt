@@ -11,7 +11,6 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.lifecycleScope
 import com.thelumiereguy.shadershowcase.core.data.local.PreferenceManager
 import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.view.LiveWallpaperGLSurfaceView
-import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.view.LiveWallpaperShaderRenderer
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
 import com.thelumiereguy.shadershowcase.features.shaders_listing.data.ShaderFactory
 import kotlinx.coroutines.Dispatchers
@@ -64,23 +63,23 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
 
         private fun setSurfaceView(holder: SurfaceHolder?) {
             Timber.d("WallpaperEngine setSurfaceView $holder")
-            glSurfaceView = object : LiveWallpaperGLSurfaceView(applicationContext) {
-                override fun getSurfaceViewHolder(): SurfaceHolder? = holder.apply {
-                    this?.setFormat(
-                        PixelFormat.RGBA_8888
-                    )
-                }
-            }
-
             if (supportsEs2) {
                 lifecycleScope.launch(Dispatchers.Main.immediate) {
-                    glSurfaceView?.setEGLContextClientVersion(2)
-                    glSurfaceView?.preserveEGLContextOnPause = true
-
                     val selectedShaderId =
                         PreferenceManager.getSelectedShader(applicationContext).firstOrNull()
 
                     selectedShaderId?.let { id ->
+
+                        glSurfaceView = object : LiveWallpaperGLSurfaceView(applicationContext) {
+                            override fun getSurfaceViewHolder(): SurfaceHolder? = holder.apply {
+                                this?.setFormat(
+                                    PixelFormat.RGBA_8888
+                                )
+                            }
+                        }
+                        glSurfaceView?.setEGLContextClientVersion(2)
+                        glSurfaceView?.preserveEGLContextOnPause = true
+
                         val frag = shaders[id].fragmentShader
                         val vertex = shaders[id].vertexShader
 
