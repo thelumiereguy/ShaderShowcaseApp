@@ -1,13 +1,16 @@
 package com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer
 
+import android.graphics.Bitmap
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
+import androidx.palette.graphics.Palette
 import timber.log.Timber
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
+import kotlin.math.roundToInt
 
 open class ShaderRenderer : GLSurfaceView.Renderer {
 
@@ -26,12 +29,15 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
 
     private val bytesPerFloat = 4
 
-    private val verticesData by lazy {
+    private val data by lazy {
         ByteBuffer.allocateDirect(tableVertices.size * bytesPerFloat)
             .order(ByteOrder.nativeOrder())
-            .asFloatBuffer().also {
-                it.put(tableVertices)
-            }
+    }
+
+    private val verticesData by lazy {
+        data.asFloatBuffer().also {
+            it.put(tableVertices)
+        }
     }
 
 
@@ -147,6 +153,18 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
 
         glDrawArrays(GL_TRIANGLE_FAN, 0, 6)
 
+        getPaletteCallback?.let { callback ->
+            getCurrentBitmap()?.let { bitmap ->
+                Palette.Builder(bitmap).generate {
+                    it?.let { palette ->
+                        callback(palette)
+                        bitmap.recycle()
+                        getPaletteCallback = null
+                    }
+                }
+            }
+        }
+
         glFinish()
 
         if (frameCount > 25) {
@@ -156,6 +174,31 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
         frameCount += 0.01f
     }
 
+    private fun getCurrentBitmap(): Bitmap? {
+        val data = ByteBuffer.allocateDirect(
+            surfaceWidth.roundToInt() *
+                    surfaceHeight.roundToInt() * bytesPerFloat
+        ).order(ByteOrder.nativeOrder())
+
+        glReadPixels(
+            0,
+            0,
+            surfaceWidth.roundToInt(),
+            surfaceHeight.roundToInt(),
+            GL_RGBA,
+            GL_UNSIGNED_BYTE,
+            data
+        )
+
+        val bitmap = Bitmap.createBitmap(
+            surfaceWidth.roundToInt(),
+            surfaceHeight.roundToInt(),
+            Bitmap.Config.ARGB_8888
+        )
+
+        bitmap.copyPixelsFromBuffer(data)
+        return bitmap
+    }
 
     private fun validateProgram(programObjectId: Int): Boolean {
         glValidateProgram(programObjectId)
@@ -172,4 +215,11 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
 
         return validateStatus[0] != 0
     }
+
+    private var getPaletteCallback: ((Palette) -> Unit)? = null
+
+    fun setPaletteCallback(callback: (Palette) -> Unit) {
+        getPaletteCallback = callback
+    }
+
 }

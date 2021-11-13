@@ -1,34 +1,38 @@
 package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable
 
-import androidx.compose.animation.core.*
+import android.util.SparseArray
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Text
+import androidx.compose.material.rememberSwipeableState
+import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.math.MathUtils
 import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
+import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.composable.GLShader
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.view.ShaderGLSurfaceView
 import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shader
-import kotlin.math.absoluteValue
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.math.roundToInt
 
-
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun ShaderDetailPage(
@@ -36,23 +40,9 @@ fun ShaderDetailPage(
     modifier: Modifier = Modifier
 ) {
 
-    val repeatingAnimation = rememberInfiniteTransition()
-
     val showMenu = remember {
         mutableStateOf(false)
     }
-
-    val offset by repeatingAnimation.animateFloat(
-        0f,
-        -20f,
-        infiniteRepeatable(
-            repeatMode = RepeatMode.Reverse,
-            animation = tween(
-                durationMillis = 1000,
-                easing = LinearEasing
-            )
-        )
-    )
 
     val swipeableState = rememberSwipeableState(0) { state ->
         showMenu.value = state == 1
@@ -62,6 +52,31 @@ fun ShaderDetailPage(
     val sizePx = with(LocalDensity.current) { 100.dp.toPx() }
 
     val anchors = mapOf(sizePx to 0, 0f to 1) // Maps anchor points (in px) to states
+
+    val coroutineScope = rememberCoroutineScope()
+
+    val interactionSource = remember {
+        MutableInteractionSource()
+    }
+
+    val buttonColors = remember {
+        mutableStateOf(Color.Black to Color.White)
+    }
+
+    val shaderRenderer = remember {
+        ShaderRenderer().apply {
+            setShaders(
+                selectedShader.fragmentShader,
+                selectedShader.vertexShader,
+            )
+
+            setPaletteCallback { palette ->
+                (palette.vibrantSwatch ?: palette.dominantSwatch)?.let { swatch ->
+                    buttonColors.value = Color(swatch.rgb) to Color(swatch.bodyTextColor)
+                }
+            }
+        }
+    }
 
     Box(
         modifier = modifier
@@ -75,14 +90,6 @@ fun ShaderDetailPage(
                 )
                 .offset { IntOffset(0, (swipeableState.offset.value - sizePx).roundToInt()) }
         ) {
-            val shaderView = remember {
-                ShaderRenderer().apply {
-                    setShaders(
-                        selectedShader.fragmentShader,
-                        selectedShader.vertexShader,
-                    )
-                }
-            }
 
             Box(
                 contentAlignment = Alignment.BottomCenter,
@@ -96,18 +103,28 @@ fun ShaderDetailPage(
                         )
                     }
             ) {
-                AndroidView(factory = {
-                    ShaderGLSurfaceView(it)
-                }) {
-                    it.setShaderRenderer(
-                        shaderView
-                    )
-                }
+
+                GLShader(
+                    renderer = shaderRenderer
+                )
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .clickable(
+                            interactionSource,
+                            indication = null
+                        ) {
+                            coroutineScope.launch {
+                                if (showMenu.value) {
+                                    swipeableState.animateTo(0)
+                                } else {
+                                    swipeableState.animateTo(1)
+                                }
+                                showMenu.value = showMenu.value.not()
+                            }
+                        }
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
@@ -121,35 +138,11 @@ fun ShaderDetailPage(
 
                     Spacer(modifier = Modifier.height(60.dp))
 
-                    Icon(
-                        painter = painterResource(id = com.thelumiereguy.shadershowcase.R.drawable.ic_double_down),
-                        contentDescription = "Scroll to show or hide options",
-                        tint = PrimaryTextColor,
-                        modifier = Modifier
-                            .size(16.dp)
-                            .offset {
-                                IntOffset(
-                                    0,
-                                    if (showMenu.value) {
-                                        0
-                                    } else {
-                                        offset.absoluteValue.roundToInt()
-                                    }
-                                )
-                            }
-                            .rotate(
-                                MathUtils.clamp(
-                                    map(
-                                        swipeableState.offset.value,
-                                        sizePx,
-                                        0f,
-                                        180f,
-                                        0f
-                                    ),
-                                    0f,
-                                    180f
-                                )
-                            )
+
+                    SwipeIcon(
+                        showMenu,
+                        swipeableState,
+                        sizePx
                     )
 
                     Spacer(modifier = Modifier.height(14.dp))
@@ -172,7 +165,8 @@ fun ShaderDetailPage(
                     0,
                     (swipeableState.offset.value).roundToInt()
                 ),
-                selectedShader
+                selectedShader,
+                buttonColors.value
             )
 
 //            if (snackBarVisibleState) {
@@ -188,6 +182,7 @@ fun ShaderDetailPage(
 }
 
 
+@ExperimentalAnimationApi
 @OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable

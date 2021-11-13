@@ -82,6 +82,7 @@ dependencies {
 
     implementation "androidx.navigation:navigation-compose:$versions.composeNavVersion"
 
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
     implementation "com.google.accompanist:accompanist-insets:$versions.accompanistVersion"
     implementation "com.google.accompanist:accompanist-navigation-animation:$versions.accompanistVersion"

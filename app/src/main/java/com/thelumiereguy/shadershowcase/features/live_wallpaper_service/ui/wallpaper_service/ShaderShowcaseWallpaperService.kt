@@ -21,7 +21,6 @@ import timber.log.Timber
 
 class ShaderShowcaseWallpaperService : WallpaperService() {
 
-
     companion object {
         private var wallpaperEngine: WallpaperEngine? = null
 
@@ -46,7 +45,7 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
         }
 
         private val activityManager =
-            getSystemService(ACTIVITY_SERVICE) as? ActivityManager
+            applicationContext.getSystemService(ACTIVITY_SERVICE) as? ActivityManager
         private val configurationInfo =
             activityManager?.deviceConfigurationInfo
         private val supportsEs2 = configurationInfo?.reqGlEsVersion ?: 0 >= 0x20000
@@ -136,9 +135,9 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
             Timber.d("WallpaperEngine onDestroy")
             lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
             glSurfaceView?.onDestroy()
-
             glSurfaceView = null
             shaderRenderer = null
+            wallpaperEngine = null
 //            shaderRenderer?.release()
         }
 

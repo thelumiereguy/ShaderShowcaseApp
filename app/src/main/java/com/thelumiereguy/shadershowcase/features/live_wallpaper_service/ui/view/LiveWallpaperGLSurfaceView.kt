@@ -10,10 +10,6 @@ abstract class LiveWallpaperGLSurfaceView constructor(
     context: Context,
 ) : GLSurfaceView(context) {
 
-    init {
-        preserveEGLContextOnPause = true
-    }
-
     private var hasSetShader = false
 
     fun setShaderRenderer(

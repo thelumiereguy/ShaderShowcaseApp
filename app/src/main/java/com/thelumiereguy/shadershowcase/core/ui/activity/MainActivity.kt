@@ -19,7 +19,6 @@ import com.thelumiereguy.shadershowcase.core.ui.navigation.NavScreen
 import com.thelumiereguy.shadershowcase.core.ui.navigation.composableSlide
 import com.thelumiereguy.shadershowcase.core.ui.theme.ShaderShowcaseTheme
 import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.screen.ShaderDetailListing
-import com.thelumiereguy.shadershowcase.features.shaders_listing.ui.composable.surfaceViewsMap
 import com.thelumiereguy.shadershowcase.features.shaders_listing.ui.screen.ListingPage
 
 @ExperimentalPagerApi
@@ -35,20 +34,6 @@ class MainActivity : ComponentActivity() {
                     ShadersShowcaseApp()
                 }
             }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (0..surfaceViewsMap.size()).forEach {
-            surfaceViewsMap[it]?.onResume()
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (0..surfaceViewsMap.size()).forEach {
-            surfaceViewsMap[it]?.onPause()
         }
     }
 }
@@ -67,8 +52,7 @@ fun ShadersShowcaseApp() {
     ) {
         composableSlide(
             NavScreen.ShaderListing.route,
-
-            ) {
+        ) {
             ListingPage { shader ->
                 navController.navigate(
                     "${NavScreen.ShaderDetailsPage.route}/${shader.id}"

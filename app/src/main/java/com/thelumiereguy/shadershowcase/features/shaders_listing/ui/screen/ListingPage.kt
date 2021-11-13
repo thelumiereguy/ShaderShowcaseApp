@@ -48,6 +48,7 @@ fun ListingPage(onShaderSelected: (Shader) -> Unit) {
             VerticalPager(
                 count = shaders.size,
                 state = pagerState,
+                itemSpacing = 200.dp,
                 key = { index -> shaders[index].title },
             ) { index ->
 

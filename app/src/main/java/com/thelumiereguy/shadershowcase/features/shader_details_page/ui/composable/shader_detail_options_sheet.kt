@@ -1,10 +1,8 @@
 package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -20,11 +18,15 @@ import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shad
 import java.io.IOException
 
 @Composable
-fun ShaderDetailOptionsBottomSheet(offset: IntOffset, selectedShader: Shader) {
+fun ShaderDetailOptionsBottomSheet(
+    offset: IntOffset,
+    selectedShader: Shader,
+    buttonColors: Pair<Color, Color>
+) {
     Surface(
-        color = Color.Black,
+        color = Color.Black.copy(alpha = 0.6f),
         modifier = Modifier
-            .requiredHeight(220.dp)
+            .requiredHeight(210.dp)
             .fillMaxWidth()
             .offset { offset },
     ) {
@@ -38,7 +40,7 @@ fun ShaderDetailOptionsBottomSheet(offset: IntOffset, selectedShader: Shader) {
             Text(
                 selectedShader.title,
                 color = Color.White,
-                style = MaterialTheme.typography.h5,
+                style = MaterialTheme.typography.h6,
                 fontWeight = FontWeight.Medium,
                 letterSpacing = 4.sp,
                 modifier = Modifier
@@ -66,6 +68,13 @@ fun ShaderDetailOptionsBottomSheet(offset: IntOffset, selectedShader: Shader) {
             )
 
             Button(
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = buttonColors.first,
+                ),
+                border = BorderStroke(
+                    1.dp,
+                    buttonColors.second
+                ),
                 onClick = {
                     try {
                         coroutineScope.setSelectedShader(
@@ -87,7 +96,7 @@ fun ShaderDetailOptionsBottomSheet(offset: IntOffset, selectedShader: Shader) {
                     .fillMaxWidth()
                     .requiredHeight(48.dp)
             ) {
-                Text(text = "Set as LiveWallpaper")
+                Text(text = "Set as Live Wallpaper", color = buttonColors.second)
             }
 
             Spacer(
