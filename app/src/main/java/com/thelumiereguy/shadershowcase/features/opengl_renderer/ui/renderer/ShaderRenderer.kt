@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import androidx.palette.graphics.Palette
+import androidx.palette.graphics.Target
 import timber.log.Timber
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -27,19 +28,25 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
         )
     }
 
+    private var surfaceHeight = 0f
+    private var surfaceWidth = 0f
+
     private val bytesPerFloat = 4
 
-    private val data by lazy {
-        ByteBuffer.allocateDirect(tableVertices.size * bytesPerFloat)
-            .order(ByteOrder.nativeOrder())
-    }
-
     private val verticesData by lazy {
-        data.asFloatBuffer().also {
-            it.put(tableVertices)
-        }
+        ByteBuffer.allocateDirect(tableVertices.size * bytesPerFloat)
+            .order(ByteOrder.nativeOrder()).asFloatBuffer().also {
+                it.put(tableVertices)
+            }
     }
 
+    private var snapshotBuffer = initializeSnapshotBuffer(0, 0)
+
+    private fun initializeSnapshotBuffer(width: Int, height: Int) = ByteBuffer.allocateDirect(
+        width *
+                height *
+                bytesPerFloat
+    ).order(ByteOrder.nativeOrder())
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         glClearColor(0f, 0f, 0f, 1f)
@@ -47,7 +54,8 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
         glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST)
     }
 
-    private val isProgramChanged = AtomicBoolean(false)
+    private
+    val isProgramChanged = AtomicBoolean(false)
 
     var programId: Int? = null
 
@@ -106,11 +114,7 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
                     0,
                     verticesData
                 )
-
-                glEnableVertexAttribArray(attribLocation)
             }
-
-            glUseProgram(newProgramId)
 
             glDetachShader(newProgramId, vertShader)
             glDetachShader(newProgramId, fragShader)
@@ -123,11 +127,10 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
     private var resolutionUniformLocation: Int? = null
     private var timeUniformLocation: Int? = null
 
-    private var surfaceHeight = 0f
-    private var surfaceWidth = 0f
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
         glViewport(0, 0, width, height)
+        snapshotBuffer = initializeSnapshotBuffer(width, height)
         surfaceWidth = width.toFloat()
         surfaceHeight = height.toFloat()
         frameCount = 0f
@@ -139,9 +142,19 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
         glDisable(GL10.GL_DITHER)
         glClear(GL10.GL_COLOR_BUFFER_BIT)
 
+
         if (isProgramChanged.getAndSet(false)) {
             setupProgram()
+        } else {
+            programId?.let {
+                glUseProgram(it)
+            } ?: return
         }
+
+        positionAttributeLocation?.let {
+            glEnableVertexAttribArray(it)
+        } ?: return
+
 
         resolutionUniformLocation?.let {
             glUniform2f(it, surfaceWidth, surfaceHeight)
@@ -153,21 +166,31 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
 
         glDrawArrays(GL_TRIANGLE_FAN, 0, 6)
 
+        positionAttributeLocation?.let {
+            glDisableVertexAttribArray(it)
+        } ?: return
+
         getPaletteCallback?.let { callback ->
-            getCurrentBitmap()?.let { bitmap ->
-                Palette.Builder(bitmap).generate {
-                    it?.let { palette ->
-                        callback(palette)
-                        bitmap.recycle()
-                        getPaletteCallback = null
-                    }
+            if (surfaceWidth != 0f && surfaceHeight != 0f) {
+                getCurrentBitmap()?.let { bitmap ->
+                    Palette.Builder(bitmap)
+                        .maximumColorCount(6)
+                        .addTarget(Target.VIBRANT)
+                        .generate {
+                            it?.let { palette ->
+                                callback(palette)
+                                getPaletteCallback = null
+                                bitmap.recycle()
+                                glFinish()
+                            }
+                        }
                 }
             }
+        } ?: kotlin.run {
+            glFinish()
         }
 
-        glFinish()
-
-        if (frameCount > 25) {
+        if (frameCount > 30) {
             frameCount = 0f
         }
 
@@ -175,28 +198,37 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
     }
 
     private fun getCurrentBitmap(): Bitmap? {
-        val data = ByteBuffer.allocateDirect(
-            surfaceWidth.roundToInt() *
-                    surfaceHeight.roundToInt() * bytesPerFloat
-        ).order(ByteOrder.nativeOrder())
+                val maxWidth = surfaceWidth.roundToInt()
+        val maxHeight = surfaceHeight.roundToInt()
+
+        val quarterWidth = maxWidth / 6
+        val quarterHeight = maxHeight / 6
+
+        val halfWidth = quarterWidth * 2
+        val halfHeight = quarterHeight * 2
+
+        initializeSnapshotBuffer(
+            halfWidth * 2,
+            halfHeight * 2,
+        )
 
         glReadPixels(
-            0,
-            0,
-            surfaceWidth.roundToInt(),
-            surfaceHeight.roundToInt(),
+            halfWidth,
+            halfHeight,
+            halfWidth * 2,
+            halfHeight * 2,
             GL_RGBA,
             GL_UNSIGNED_BYTE,
-            data
+            snapshotBuffer
         )
 
         val bitmap = Bitmap.createBitmap(
-            surfaceWidth.roundToInt(),
-            surfaceHeight.roundToInt(),
+            24,
+            24,
             Bitmap.Config.ARGB_8888
         )
 
-        bitmap.copyPixelsFromBuffer(data)
+        bitmap.copyPixelsFromBuffer(snapshotBuffer)
         return bitmap
     }
 

@@ -24,7 +24,7 @@ fun ShaderDetailOptionsBottomSheet(
     buttonColors: Pair<Color, Color>
 ) {
     Surface(
-        color = Color.Black.copy(alpha = 0.6f),
+        color = Color.Black,
         modifier = Modifier
             .requiredHeight(210.dp)
             .fillMaxWidth()
@@ -72,8 +72,8 @@ fun ShaderDetailOptionsBottomSheet(
                     backgroundColor = buttonColors.first,
                 ),
                 border = BorderStroke(
-                    1.dp,
-                    buttonColors.second
+                    0.5.dp,
+                    Color.White
                 ),
                 onClick = {
                     try {
@@ -96,7 +96,11 @@ fun ShaderDetailOptionsBottomSheet(
                     .fillMaxWidth()
                     .requiredHeight(48.dp)
             ) {
-                Text(text = "Set as Live Wallpaper", color = buttonColors.second)
+                Text(
+                    text = "Set as Live Wallpaper",
+                    color = buttonColors.second,
+                    fontWeight = FontWeight.Bold
+                )
             }
 
             Spacer(

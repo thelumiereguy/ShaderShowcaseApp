@@ -29,11 +29,9 @@ fun GLShader(
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_RESUME -> {
-                    Timber.d("onResume Event")
                     view?.onResume()
                 }
                 Lifecycle.Event.ON_PAUSE -> {
-                    Timber.d("onPause Event")
                     view?.onPause()
                 }
                 else -> {
@@ -42,6 +40,7 @@ fun GLShader(
             }
         }
         lifeCycleState.addObserver(observer)
+
         onDispose {
             lifeCycleState.removeObserver(observer)
             view = null
@@ -49,7 +48,9 @@ fun GLShader(
     }
 
     AndroidView(factory = {
-        view ?: ShaderGLSurfaceView(it)
+        view ?: ShaderGLSurfaceView(it).also { glSurfaceView ->
+            view = glSurfaceView
+        }
     }) {
         it.setShaderRenderer(
             renderer

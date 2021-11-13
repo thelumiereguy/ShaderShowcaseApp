@@ -1,6 +1,5 @@
 package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable
 
-import android.util.SparseArray
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.composable.GLShader
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
-import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.view.ShaderGLSurfaceView
 import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shader
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -69,15 +67,11 @@ fun ShaderDetailPage(
                 selectedShader.fragmentShader,
                 selectedShader.vertexShader,
             )
-
-            setPaletteCallback { palette ->
-                (palette.vibrantSwatch ?: palette.dominantSwatch)?.let { swatch ->
-                    buttonColors.value = Color(swatch.rgb) to Color(swatch.bodyTextColor)
-                }
+            getButtonColorPair(coroutineScope) { buttonColorPair ->
+                buttonColors.value = buttonColorPair
             }
         }
     }
-
     Box(
         modifier = modifier
     ) {
@@ -114,7 +108,7 @@ fun ShaderDetailPage(
                         .fillMaxWidth()
                         .clickable(
                             interactionSource,
-                            indication = null
+                            null
                         ) {
                             coroutineScope.launch {
                                 if (showMenu.value) {
