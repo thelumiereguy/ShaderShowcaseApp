@@ -29,7 +29,7 @@ internal fun map(
     endRangeMin: Float,
     endRangeMax: Float
 ): Float {
-    return (value - startRangeMin) / (startRangeMax - startRangeMin) * (endRangeMax - endRangeMin) + endRangeMin;
+    return (value - startRangeMin) / (startRangeMax - startRangeMin) * (endRangeMax - endRangeMin) + endRangeMin
 }
 
 internal fun ShaderRenderer.getButtonColorPair(

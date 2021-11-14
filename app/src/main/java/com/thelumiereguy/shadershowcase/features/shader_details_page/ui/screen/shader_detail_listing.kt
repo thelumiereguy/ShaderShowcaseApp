@@ -25,7 +25,9 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.thelumiereguy.shadershowcase.core.data.ShaderFactory
 import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable.ShaderDetailPage
+import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable.SwipeButtonRow
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
+import timber.log.Timber
 
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
@@ -37,61 +39,79 @@ fun ShaderDetailListing(selectedShaderId: Int, onBackPressed: () -> Unit) {
         Scaffold {
             val context = LocalContext.current
 
+
             val shaders = remember {
                 ShaderFactory.getShadersList(context)
             }
 
             val pagerState = rememberPagerState()
 
-            LaunchedEffect(key1 = true, block = {
-                pagerState.scrollToPage(selectedShaderId)
+            //Initial Scroll
+            LaunchedEffect(key1 = selectedShaderId, block = {
+                pagerState.scrollToPage(selectedShaderId) // index is same as shader ID
             })
 
-            HorizontalPager(
-                shaders.size,
-                modifier = Modifier
-                    .fillMaxSize(),
-                pagerState,
-                itemSpacing = 100.dp,
-                key = { index -> shaders[index].id }
-            ) { index ->
-                ShaderDetailPage(
-                    shaders[index],
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth(),
-                )
-            }
+            Timber.d("Recomposition main page")
 
             Box(
                 modifier = Modifier
-                    .height(100.dp)
-                    .fillMaxWidth()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Black.copy(alpha = 0.2f),
-                                Color.Transparent,
-                            ),
-                        )
-                    )
+                    .fillMaxSize(),
             ) {
-                Icon(
-                    painter = painterResource(
-                        id =
-                        R.drawable.abc_ic_ab_back_material
-                    ),
-                    contentDescription = "Icon to navigate back",
-                    tint = Color.White,
+
+                HorizontalPager(
+                    shaders.size,
+                    state = pagerState,
+                    itemSpacing = 200.dp,
+                    key = { index -> shaders[index].id }
+                ) { index ->
+                    ShaderDetailPage(
+                        shaders[index],
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth(),
+                    )
+                }
+
+                SwipeButtonRow(
+                    selectedShaderId,
+                    pagerState,
+                    shaders.size,
+                    modifier = Modifier.align(Alignment.Center)
+                ) { newPageIndex ->
+                    pagerState.animateScrollToPage(newPageIndex)
+                }
+
+                Box(
                     modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .clickable {
-                            onBackPressed()
-                        }
-                        .padding(20.dp)
-                        .size(28.dp)
-                )
+                        .height(100.dp)
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Black.copy(alpha = 0.2f),
+                                    Color.Transparent,
+                                ),
+                            )
+                        )
+                ) {
+                    Icon(
+                        painter = painterResource(
+                            id =
+                            R.drawable.abc_ic_ab_back_material
+                        ),
+                        contentDescription = "Icon to navigate back",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .clickable {
+                                onBackPressed()
+                            }
+                            .padding(20.dp)
+                            .size(28.dp)
+                    )
+                }
             }
+
         }
     }
 }
@@ -102,5 +122,5 @@ fun ShaderDetailListing(selectedShaderId: Int, onBackPressed: () -> Unit) {
 @Preview
 @Composable
 fun ShaderDetailListingPreview() {
-    ShaderDetailListing(0) {}
+    ShaderDetailListing(1) {}
 }

@@ -14,7 +14,6 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.core.math.MathUtils
 import com.thelumiereguy.shadershowcase.R
 import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
 import kotlin.math.absoluteValue
@@ -59,17 +58,13 @@ fun SwipeIcon(
                 )
             }
             .rotate(
-                MathUtils.clamp(
-                    map(
-                        swipeableState.offset.value,
-                        sizePx,
-                        0f,
-                        180f,
-                        0f
-                    ),
+                map(
+                    swipeableState.offset.value,
+                    sizePx,
                     0f,
-                    180f
-                )
+                    180f,
+                    0f
+                ),
             )
     )
 }
