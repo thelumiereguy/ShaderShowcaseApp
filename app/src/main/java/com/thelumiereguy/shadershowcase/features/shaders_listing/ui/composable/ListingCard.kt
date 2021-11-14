@@ -17,7 +17,7 @@ import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
 import com.thelumiereguy.shadershowcase.core.ui.theme.ShaderShowcaseTheme
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.composable.GLShader
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
-import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shader
+import com.thelumiereguy.shadershowcase.core.data.model.Shader
 
 @Composable
 fun ListingCard(shader: Shader, modifier: Modifier = Modifier, onShaderSelected: (Shader) -> Unit) {

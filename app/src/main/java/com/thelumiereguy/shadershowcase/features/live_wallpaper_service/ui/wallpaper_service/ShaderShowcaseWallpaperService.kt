@@ -12,7 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.thelumiereguy.shadershowcase.core.data.local.PreferenceManager
 import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.view.LiveWallpaperGLSurfaceView
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
-import com.thelumiereguy.shadershowcase.features.shaders_listing.data.ShaderFactory
+import com.thelumiereguy.shadershowcase.core.data.ShaderFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
@@ -61,7 +61,6 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
 
 
         private fun setSurfaceView(holder: SurfaceHolder?) {
-            Timber.d("WallpaperEngine setSurfaceView $holder")
             if (supportsEs2) {
                 lifecycleScope.launch(Dispatchers.Main.immediate) {
                     val selectedShaderId =
@@ -103,7 +102,6 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
                 PreferenceManager.getSelectedShader(applicationContext).collect {
                     val newShader = shaders[it]
 
-                    Timber.d("observeSelectedShaderChanges   $it")
                     val newFragShader = newShader.fragmentShader
                     val newVertexShader = newShader.vertexShader
                     shaderRenderer?.setShaders(newFragShader, newVertexShader)
@@ -115,7 +113,6 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
 
         override fun onVisibilityChanged(visible: Boolean) {
             super.onVisibilityChanged(visible)
-            Timber.d("WallpaperEngine onVisibilityChanged $visible")
             if (visible) {
                 lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
             } else {

@@ -1,9 +1,9 @@
-package com.thelumiereguy.shadershowcase.features.shaders_listing.data
+package com.thelumiereguy.shadershowcase.core.data
 
 import android.content.Context
 import android.content.res.Resources
 import com.thelumiereguy.shadershowcase.R
-import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shader
+import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader

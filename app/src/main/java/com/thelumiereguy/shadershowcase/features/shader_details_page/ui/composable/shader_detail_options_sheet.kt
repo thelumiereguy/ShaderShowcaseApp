@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thelumiereguy.shadershowcase.core.data.local.PreferenceManager.setSelectedShader
 import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service.ShaderShowcaseWallpaperService
-import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shader
+import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import java.io.IOException
 
 @Composable

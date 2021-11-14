@@ -1,7 +1,6 @@
-package com.thelumiereguy.shadershowcase.features.shaders_listing.data.model
+package com.thelumiereguy.shadershowcase.core.data.model
 
 import android.os.Parcelable
-import com.thelumiereguy.shadershowcase.R
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

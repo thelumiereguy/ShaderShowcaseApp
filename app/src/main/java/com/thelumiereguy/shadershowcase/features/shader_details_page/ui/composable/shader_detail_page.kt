@@ -25,9 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.composable.GLShader
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
-import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shader
+import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 @ExperimentalAnimationApi

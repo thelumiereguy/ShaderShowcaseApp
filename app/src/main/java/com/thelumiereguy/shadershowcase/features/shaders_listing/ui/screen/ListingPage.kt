@@ -10,8 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,8 +18,8 @@ import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.pager.*
 import com.google.android.material.math.MathUtils
 import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
-import com.thelumiereguy.shadershowcase.features.shaders_listing.data.ShaderFactory
-import com.thelumiereguy.shadershowcase.features.shaders_listing.data.model.Shader
+import com.thelumiereguy.shadershowcase.core.data.ShaderFactory
+import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import com.thelumiereguy.shadershowcase.features.shaders_listing.ui.composable.ListingCard
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import kotlin.math.absoluteValue
