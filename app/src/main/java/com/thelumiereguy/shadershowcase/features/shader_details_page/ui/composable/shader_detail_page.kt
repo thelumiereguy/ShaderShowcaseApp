@@ -41,7 +41,9 @@ fun ShaderDetailPage(
         swipeableState.currentValue == 1
     }
 
-    val sizePx = with(LocalDensity.current) { 100.dp.toPx() }
+    val bottomSheetHeight = 200.dp
+
+    val sizePx = with(LocalDensity.current) { bottomSheetHeight.toPx() }
 
     val anchors = mapOf(sizePx to 0, 0f to 1) // Maps anchor points (in px) to states
 
@@ -74,93 +76,89 @@ fun ShaderDetailPage(
 
     Box(
         modifier = modifier
+            .swipeable(
+                swipeableState,
+                anchors = anchors,
+                orientation = Orientation.Vertical
+            )
     ) {
+        GLShader(
+            renderer = shaderRenderer,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+        )
+
         Column(
             modifier = Modifier
-                .swipeable(
-                    swipeableState,
-                    anchors = anchors,
-                    orientation = Orientation.Vertical
-                )
-                .offset { IntOffset(0, (swipeableState.offset.value - sizePx).roundToInt()) }
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .offset {
+                    IntOffset(
+                        0,
+                        (swipeableState.offset.value).roundToInt()
+                    )
+                }
         ) {
 
-            Box(
-                contentAlignment = Alignment.BottomCenter,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight()
-                    .offset {
-                        IntOffset(
-                            0,
-                            ((swipeableState.offset.value - sizePx) * 0.9f).roundToInt()
-                        )
-                    }
-            ) {
-
-                GLShader(
-                    renderer = shaderRenderer
-                )
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(
-                            interactionSource,
-                            null
-                        ) {
-                            coroutineScope.launch {
-                                if (showMenu.value) {
-                                    swipeableState.animateTo(0)
-                                } else {
-                                    swipeableState.animateTo(1)
-                                }
+                    .clickable(
+                        interactionSource,
+                        null
+                    ) {
+                        coroutineScope.launch {
+                            if (showMenu.value) {
+                                swipeableState.animateTo(0)
+                            } else {
+                                swipeableState.animateTo(1)
                             }
                         }
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.7f)
-                                ),
-                                endY = 400f
-                            )
+                    }
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black.copy(alpha = 0.7f)
+                            ),
+                            endY = 400f
                         )
-                ) {
-
-                    Spacer(modifier = Modifier.height(60.dp))
-
-
-                    SwipeIcon(
-                        showMenu,
-                        swipeableState,
-                        sizePx
                     )
+            ) {
 
-                    Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(60.dp))
 
-                    Text(
-                        color = PrimaryTextColor,
-                        text = if (showMenu.value) {
-                            "Hide Option"
-                        } else {
-                            "Show Option"
-                        }
-                    )
 
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
+                SwipeIcon(
+                    showMenu,
+                    swipeableState,
+                    sizePx
+                )
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                Text(
+                    color = PrimaryTextColor,
+                    text = if (showMenu.value) {
+                        "Hide Option"
+                    } else {
+                        "Show Option"
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
             }
 
             ShaderDetailOptionsBottomSheet(
-                offset = IntOffset(
-                    0,
-                    (swipeableState.offset.value).roundToInt()
-                ),
                 selectedShader,
-                buttonColors
+                buttonColors,
+                modifier = Modifier.requiredHeight(bottomSheetHeight)
             )
+
+        }
+    }
 
 //            if (snackBarVisibleState) {
 //                Snackbar(
@@ -169,9 +167,6 @@ fun ShaderDetailPage(
 //                    Text(text = "${selectedShader.title} set as Wallpaper!")
 //                }
 //            }
-
-        }
-    }
 }
 
 

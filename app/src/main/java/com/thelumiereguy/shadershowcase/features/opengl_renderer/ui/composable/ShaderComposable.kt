@@ -3,6 +3,7 @@ package com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.composable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
@@ -15,6 +16,7 @@ import timber.log.Timber
 @Composable
 fun GLShader(
     renderer: ShaderRenderer,
+    modifier: Modifier = Modifier
 ) {
 
     val context = LocalContext.current
@@ -47,11 +49,12 @@ fun GLShader(
         }
     }
 
-    AndroidView(factory = {
-        view ?: ShaderGLSurfaceView(it).also { glSurfaceView ->
-            view = glSurfaceView
-        }
-    }) {
+    AndroidView(modifier = modifier,
+        factory = {
+            view ?: ShaderGLSurfaceView(it).also { glSurfaceView ->
+                view = glSurfaceView
+            }
+        }) {
         it.setShaderRenderer(
             renderer
         )

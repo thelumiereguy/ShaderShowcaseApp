@@ -9,26 +9,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thelumiereguy.shadershowcase.core.data.local.PreferenceManager.setSelectedShader
-import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service.ShaderShowcaseWallpaperService
 import com.thelumiereguy.shadershowcase.core.data.model.Shader
+import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service.ShaderShowcaseWallpaperService
 import java.io.IOException
 
 @Composable
 fun ShaderDetailOptionsBottomSheet(
-    offset: IntOffset,
     selectedShader: Shader,
-    buttonColors: Pair<Color, Color>
+    buttonColors: Pair<Color, Color>,
+    modifier: Modifier = Modifier
 ) {
     Surface(
-        color = Color.Black,
-        modifier = Modifier
-            .requiredHeight(210.dp)
+        color = Color.Black.copy(alpha = 0.68f),
+        modifier = modifier
             .fillMaxWidth()
-            .offset { offset },
     ) {
         Column(
             modifier = Modifier.padding(all = 16.dp),
