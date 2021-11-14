@@ -1,16 +1,14 @@
 package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable
 
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
@@ -19,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.math.MathUtils
 import com.thelumiereguy.shadershowcase.R
 import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
-import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
@@ -27,7 +24,7 @@ import kotlin.math.roundToInt
 @ExperimentalMaterialApi
 @Composable
 fun SwipeIcon(
-    showMenu: MutableState<Boolean>,
+    showMenu: State<Boolean>,
     swipeableState: SwipeableState<Int>,
     sizePx: Float
 ) {

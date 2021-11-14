@@ -10,10 +10,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -22,10 +20,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.composable.GLShader
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
-import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -37,13 +35,10 @@ fun ShaderDetailPage(
     modifier: Modifier = Modifier
 ) {
 
-    val showMenu = remember {
-        mutableStateOf(false)
-    }
+    val swipeableState = rememberSwipeableState(0)
 
-    val swipeableState = rememberSwipeableState(0) { state ->
-        showMenu.value = state == 1
-        true
+    val showMenu = derivedStateOf {
+        swipeableState.currentValue == 1
     }
 
     val sizePx = with(LocalDensity.current) { 100.dp.toPx() }
@@ -56,21 +51,27 @@ fun ShaderDetailPage(
         MutableInteractionSource()
     }
 
-    val buttonColors = remember {
-        mutableStateOf(Color.Black to Color.White)
-    }
-
     val shaderRenderer = remember {
         ShaderRenderer().apply {
             setShaders(
                 selectedShader.fragmentShader,
                 selectedShader.vertexShader,
             )
-            getButtonColorPair(coroutineScope) { buttonColorPair ->
-                buttonColors.value = buttonColorPair
-            }
         }
     }
+
+    var buttonColors by rememberSaveable(
+        key = selectedShader.title
+    ) {
+        mutableStateOf(Color.Black to Color.White)
+    }
+
+    LaunchedEffect(key1 = shaderRenderer, block = {
+        shaderRenderer.getButtonColorPair { buttonColorPair ->
+            buttonColors = buttonColorPair
+        }
+    })
+
     Box(
         modifier = modifier
     ) {
@@ -115,7 +116,6 @@ fun ShaderDetailPage(
                                 } else {
                                     swipeableState.animateTo(1)
                                 }
-                                showMenu.value = showMenu.value.not()
                             }
                         }
                         .background(
@@ -159,7 +159,7 @@ fun ShaderDetailPage(
                     (swipeableState.offset.value).roundToInt()
                 ),
                 selectedShader,
-                buttonColors.value
+                buttonColors
             )
 
 //            if (snackBarVisibleState) {

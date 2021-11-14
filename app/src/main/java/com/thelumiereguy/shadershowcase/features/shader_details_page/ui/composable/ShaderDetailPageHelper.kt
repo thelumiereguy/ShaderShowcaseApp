@@ -7,7 +7,6 @@ import android.content.Intent
 import androidx.compose.ui.graphics.Color
 import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service.ShaderShowcaseWallpaperService
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
-import kotlinx.coroutines.CoroutineScope
 
 internal fun Context.openLiveWallpaperChooser() {
     Intent().let { intent ->
@@ -34,7 +33,6 @@ internal fun map(
 }
 
 internal fun ShaderRenderer.getButtonColorPair(
-    coroutineScope: CoroutineScope,
     callback: (Pair<Color, Color>) -> Unit
 ) {
     setPaletteCallback { palette ->

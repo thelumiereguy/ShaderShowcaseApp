@@ -23,8 +23,8 @@ import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable.ShaderDetailPage
 import com.thelumiereguy.shadershowcase.core.data.ShaderFactory
+import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable.ShaderDetailPage
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 
 @ExperimentalAnimationApi
