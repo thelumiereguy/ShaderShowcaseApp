@@ -4,16 +4,16 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.thelumiereguy.shadershowcase.core.data.local.PreferenceManager.setSelectedShader
+import com.thelumiereguy.shadershowcase.core.data.local.PreferenceManager
 import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service.ShaderShowcaseWallpaperService
 import java.io.IOException
@@ -21,18 +21,31 @@ import java.io.IOException
 @Composable
 fun ShaderDetailOptionsBottomSheet(
     selectedShader: Shader,
-    buttonColors: Pair<Color, Color>,
+    buttonColors: ButtonColorHolder,
     modifier: Modifier = Modifier
 ) {
+
+    val context = LocalContext.current
+
+    val preferenceManager = remember {
+        PreferenceManager(context)
+    }
+
+    DisposableEffect(key1 = true, effect = {
+        onDispose {
+            preferenceManager.release()
+        }
+    })
+
+
     Surface(
-        color = Color.Black.copy(alpha = 0.68f),
+        color = Color.Black.copy(alpha = 0.9f),
         modifier = modifier
             .fillMaxWidth()
     ) {
         Column(
             modifier = Modifier.padding(all = 16.dp),
         ) {
-            val context = LocalContext.current
 
             val coroutineScope = rememberCoroutineScope()
 
@@ -68,7 +81,7 @@ fun ShaderDetailOptionsBottomSheet(
 
             Button(
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = buttonColors.first,
+                    backgroundColor = Color(buttonColors.backgroundColor),
                 ),
                 border = BorderStroke(
                     0.5.dp,
@@ -76,12 +89,13 @@ fun ShaderDetailOptionsBottomSheet(
                 ),
                 onClick = {
                     try {
-                        coroutineScope.setSelectedShader(
-                            context,
-                            selectedShader.id
-                        )
+                        preferenceManager.run {
+                            coroutineScope.setSelectedShader(
+                                selectedShader.id
+                            )
+                        }
 
-                        if (!ShaderShowcaseWallpaperService.isRunning())
+//                        if (!ShaderShowcaseWallpaperService.isRunning())
                             context.openLiveWallpaperChooser()
 //                            setSnackBarState(!snackBarVisibleState)
 
@@ -97,7 +111,7 @@ fun ShaderDetailOptionsBottomSheet(
             ) {
                 Text(
                     text = "Set as Live Wallpaper",
-                    color = buttonColors.second,
+                    color = Color(buttonColors.textColor),
                     fontWeight = FontWeight.Bold
                 )
             }

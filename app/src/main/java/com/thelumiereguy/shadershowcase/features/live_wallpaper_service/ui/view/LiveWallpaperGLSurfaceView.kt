@@ -10,6 +10,10 @@ abstract class LiveWallpaperGLSurfaceView constructor(
     context: Context,
 ) : GLSurfaceView(context) {
 
+    init {
+        id = generateViewId()
+    }
+
     private var hasSetShader = false
 
     fun setShaderRenderer(

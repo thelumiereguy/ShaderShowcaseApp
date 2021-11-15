@@ -87,9 +87,12 @@ dependencies {
     implementation "com.google.accompanist:accompanist-insets:$versions.accompanistVersion"
     implementation "com.google.accompanist:accompanist-navigation-animation:$versions.accompanistVersion"
     implementation "com.google.accompanist:accompanist-pager:$versions.accompanistVersion"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$versions.accompanistVersion"
 
     // If using indicators, also depend on
     implementation "com.google.accompanist:accompanist-pager-indicators:$versions.accompanistVersion"
+
+    implementation 'com.github.anrwatchdog:anrwatchdog:1.4.0'
 
     implementation "com.jakewharton.timber:timber:$versions.timberVersion"
 

@@ -29,8 +29,6 @@ fun SwipeButtonRow(
     onSwiped: suspend (newPageIndex: Int) -> Unit
 ) {
 
-    Timber.d("Recomposition composable")
-
     val coroutineScope = rememberCoroutineScope()
 
     var selectedPage by remember {

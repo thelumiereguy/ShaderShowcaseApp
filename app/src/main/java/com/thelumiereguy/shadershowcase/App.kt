@@ -1,29 +1,30 @@
 package com.thelumiereguy.shadershowcase
 
 import android.app.Application
-import android.os.StrictMode
-import android.os.StrictMode.ThreadPolicy
-import android.os.StrictMode.VmPolicy
+import com.github.anrwatchdog.ANRWatchDog
 
 
 class App : Application() {
 
     override fun onCreate() {
-        StrictMode.setThreadPolicy(
-            ThreadPolicy.Builder()
-                .detectDiskReads()
-                .detectDiskWrites()
-                .detectNetwork() // or .detectAll() for all detectable problems
-                .penaltyLog()
-                .build()
-        )
-        StrictMode.setVmPolicy(
-            VmPolicy.Builder()
-                .detectLeakedSqlLiteObjects()
-                .detectLeakedClosableObjects()
-                .penaltyLog()
-                .build()
-        )
+//        if (BuildConfig.DEBUG) {
+//            StrictMode.setThreadPolicy(
+//                ThreadPolicy.Builder()
+//                    .detectDiskReads()
+//                    .detectDiskWrites()
+//                    .detectNetwork() // or .detectAll() for all detectable problems
+//                    .penaltyLog()
+//                    .build()
+//            )
+//            StrictMode.setVmPolicy(
+//                VmPolicy.Builder()
+//                    .detectLeakedSqlLiteObjects()
+//                    .detectLeakedClosableObjects()
+//                    .penaltyLog()
+//                    .build()
+//            )
+//        }
+//        ANRWatchDog().start()
         super.onCreate()
     }
 }

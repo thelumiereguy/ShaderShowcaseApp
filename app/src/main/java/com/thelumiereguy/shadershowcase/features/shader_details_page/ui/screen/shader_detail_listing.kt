@@ -1,6 +1,5 @@
 package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.screen
 
-import androidx.appcompat.R
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,11 +22,11 @@ import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.thelumiereguy.shadershowcase.R
 import com.thelumiereguy.shadershowcase.core.data.ShaderFactory
 import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable.ShaderDetailPage
 import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable.SwipeButtonRow
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
-import timber.log.Timber
 
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
@@ -35,6 +34,19 @@ import timber.log.Timber
 @ExperimentalMaterialApi
 @Composable
 fun ShaderDetailListing(selectedShaderId: Int, onBackPressed: () -> Unit) {
+
+//    val systemUiController = rememberSystemUiController()
+//    val useDarkIcons = MaterialTheme.colors.isLight
+//
+//    SideEffect {
+//        // Update all of the system bar colors to be transparent, and use
+//        // dark icons if we're in light theme
+//        systemUiController.setSystemBarsColor(
+//            color = Color.Transparent,
+//            darkIcons = useDarkIcons
+//        )
+//    }
+
     ProvideWindowInsets {
         Scaffold {
             val context = LocalContext.current
@@ -50,8 +62,6 @@ fun ShaderDetailListing(selectedShaderId: Int, onBackPressed: () -> Unit) {
             LaunchedEffect(key1 = selectedShaderId, block = {
                 pagerState.scrollToPage(selectedShaderId) // index is same as shader ID
             })
-
-            Timber.d("Recomposition main page")
 
             Box(
                 modifier = Modifier
@@ -88,7 +98,7 @@ fun ShaderDetailListing(selectedShaderId: Int, onBackPressed: () -> Unit) {
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    Color.Black.copy(alpha = 0.2f),
+                                    Color.Black.copy(alpha = 0.3f),
                                     Color.Transparent,
                                 ),
                             )
@@ -96,8 +106,7 @@ fun ShaderDetailListing(selectedShaderId: Int, onBackPressed: () -> Unit) {
                 ) {
                     Icon(
                         painter = painterResource(
-                            id =
-                            R.drawable.abc_ic_ab_back_material
+                            id = R.drawable.abc_ic_ab_back_material
                         ),
                         contentDescription = "Icon to navigate back",
                         tint = Color.White,

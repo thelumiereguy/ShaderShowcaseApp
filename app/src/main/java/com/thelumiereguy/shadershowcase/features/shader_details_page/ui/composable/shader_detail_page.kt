@@ -1,5 +1,6 @@
 package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable
 
+import android.os.Parcelable
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,15 +17,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.composable.GLShader
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
+import timber.log.Timber
 import kotlin.math.roundToInt
 
 @ExperimentalAnimationApi
@@ -49,10 +54,6 @@ fun ShaderDetailPage(
 
     val coroutineScope = rememberCoroutineScope()
 
-    val interactionSource = remember {
-        MutableInteractionSource()
-    }
-
     val shaderRenderer = remember {
         ShaderRenderer().apply {
             setShaders(
@@ -63,14 +64,23 @@ fun ShaderDetailPage(
     }
 
     var buttonColors by rememberSaveable(
-        key = selectedShader.title
+        key = selectedShader.id.toString()
     ) {
-        mutableStateOf(Color.Black to Color.White)
+        mutableStateOf(android.graphics.Color.BLACK to android.graphics.Color.WHITE)
     }
 
+    val systemUiController = rememberSystemUiController()
+
     LaunchedEffect(key1 = shaderRenderer, block = {
+
         shaderRenderer.getButtonColorPair { buttonColorPair ->
             buttonColors = buttonColorPair
+            val statusBarColor = Color(buttonColorPair.backgroundColor)
+
+            systemUiController.setSystemBarsColor(
+                color = statusBarColor,
+                statusBarColor.luminance() >= 0.5f
+            )
         }
     })
 
@@ -101,6 +111,10 @@ fun ShaderDetailPage(
                 }
         ) {
 
+            val interactionSource = remember {
+                MutableInteractionSource()
+            }
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -121,9 +135,8 @@ fun ShaderDetailPage(
                         brush = Brush.verticalGradient(
                             colors = listOf(
                                 Color.Transparent,
-                                Color.Black.copy(alpha = 0.7f)
+                                Color.Black.copy(alpha = 0.9f)
                             ),
-                            endY = 400f
                         )
                     )
             ) {

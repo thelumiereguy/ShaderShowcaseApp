@@ -20,7 +20,7 @@ import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.Sha
 import com.thelumiereguy.shadershowcase.core.data.model.Shader
 
 @Composable
-fun ListingCard(shader: Shader, modifier: Modifier = Modifier, onShaderSelected: (Shader) -> Unit) {
+fun ListingCard(shader: Shader, modifier: Modifier = Modifier) {
 
     val shaderRenderer = remember {
         ShaderRenderer().apply {
@@ -75,9 +75,6 @@ fun ListCardPreview() {
     ShaderShowcaseTheme {
         ListingCard(
             Shader.getDefault()
-        ) {
-
-
-        }
+        )
     }
 }

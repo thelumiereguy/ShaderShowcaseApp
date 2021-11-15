@@ -1,21 +1,16 @@
-package com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service;
+package com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service
 
 import android.app.ActivityManager
-import android.graphics.PixelFormat
 import android.opengl.GLSurfaceView
 import android.service.wallpaper.WallpaperService
 import android.view.SurfaceHolder
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
+import com.thelumiereguy.shadershowcase.core.data.ShaderFactory
 import com.thelumiereguy.shadershowcase.core.data.local.PreferenceManager
+import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.view.LiveWallpaperGLSurfaceView
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
-import com.thelumiereguy.shadershowcase.core.data.ShaderFactory
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -40,9 +35,7 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
 
         private var shaderRenderer: ShaderRenderer? = null
 
-        private val shaders by lazy {
-            ShaderFactory.getShadersList(applicationContext)
-        }
+        private var preferenceManager: PreferenceManager? = null
 
         private val activityManager =
             applicationContext.getSystemService(ACTIVITY_SERVICE) as? ActivityManager
@@ -53,60 +46,70 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
 
         override fun onCreate(surfaceHolder: SurfaceHolder?) {
             super.onCreate(surfaceHolder)
+            preferenceManager = PreferenceManager(applicationContext)
             observeSelectedShaderChanges()
-            Timber.d("WallpaperEngine onCreateEngine $isPreview")
             setSurfaceView(surfaceHolder)
             lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         }
 
+        override fun onSurfaceChanged(
+            holder: SurfaceHolder?,
+            format: Int,
+            width: Int,
+            height: Int
+        ) {
+            super.onSurfaceChanged(holder, format, width, height)
+            if (!isPreview)
+                setSurfaceView(holder)
+        }
+
+        private var selectedShader: Shader? = null
 
         private fun setSurfaceView(holder: SurfaceHolder?) {
             if (supportsEs2) {
-                lifecycleScope.launch(Dispatchers.Main.immediate) {
-                    val selectedShaderId =
-                        PreferenceManager.getSelectedShader(applicationContext).firstOrNull()
-
-                    selectedShaderId?.let { id ->
-
-                        glSurfaceView = object : LiveWallpaperGLSurfaceView(applicationContext) {
-                            override fun getSurfaceViewHolder(): SurfaceHolder? = holder.apply {
-                                this?.setFormat(
-                                    PixelFormat.RGBA_8888
-                                )
-                            }
-                        }
-                        glSurfaceView?.setEGLContextClientVersion(2)
-                        glSurfaceView?.preserveEGLContextOnPause = true
-
-                        val frag = shaders[id].fragmentShader
-                        val vertex = shaders[id].vertexShader
-
-                        if (frag.isNotEmpty() && vertex.isNotEmpty())
-                            setRenderer(
-                                ShaderRenderer(
-                                ).also {
-                                    it.setShaders(frag, vertex)
-                                    shaderRenderer = it
-                                }
-                            )
-                    }
-
+                glSurfaceView = object : LiveWallpaperGLSurfaceView(applicationContext) {
+                    override fun getSurfaceViewHolder(): SurfaceHolder? = holder
                 }
-            } else {
-                return
+
+                glSurfaceView?.setEGLContextClientVersion(2)
+                glSurfaceView?.preserveEGLContextOnPause = true
+
+                setRenderer(
+                    ShaderRenderer(
+                    ).also {
+                        shaderRenderer = it
+
+                        setShaderToRenderer()
+                    }
+                )
+            }
+        }
+
+        private fun setShaderToRenderer() {
+            val shader = selectedShader
+            if (shader != null) {
+                shaderRenderer?.setShaders(
+                    shader.fragmentShader,
+                    shader.vertexShader
+                )
             }
         }
 
         private fun observeSelectedShaderChanges() {
-            lifecycleScope.launchWhenStarted {
-                PreferenceManager.getSelectedShader(applicationContext).collect {
-                    val newShader = shaders[it]
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    preferenceManager?.getSelectedShader()?.collect { index ->
 
-                    val newFragShader = newShader.fragmentShader
-                    val newVertexShader = newShader.vertexShader
-                    shaderRenderer?.setShaders(newFragShader, newVertexShader)
+                        val shadersList = ShaderFactory.getShadersList(applicationContext)
+                        val newShader = shadersList[index]
+                        selectedShader = newShader
+                        glSurfaceView ?: kotlin.run {
+                            Timber.d("SurfaceView is null. Initializing it")
+                            setSurfaceView(surfaceHolder)
+                        }
+                        setShaderToRenderer()
+                    }
                 }
-
             }
         }
 
@@ -118,24 +121,34 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
             } else {
                 lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
             }
-            if (rendererHasBeenSet) {
-                if (visible) {
-                    glSurfaceView?.onResume()
-                } else {
-                    glSurfaceView?.onPause()
-                }
+            if (visible) {
+                glSurfaceView?.onResume()
+            } else {
+                glSurfaceView?.onPause()
+            }
+        }
+
+        override fun onSurfaceDestroyed(holder: SurfaceHolder?) {
+            super.onSurfaceDestroyed(holder)
+            if (isPreview) {
+                stopSelf()
+                glSurfaceView?.onPause()
+                glSurfaceView = null
+                shaderRenderer = null
+                wallpaperEngine = null
+                preferenceManager?.release()
             }
         }
 
         override fun onDestroy() {
             super.onDestroy()
-            Timber.d("WallpaperEngine onDestroy")
             lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+            glSurfaceView?.onPause()
             glSurfaceView?.onDestroy()
             glSurfaceView = null
             shaderRenderer = null
             wallpaperEngine = null
-//            shaderRenderer?.release()
+            preferenceManager?.release()
         }
 
         private fun setRenderer(renderer: GLSurfaceView.Renderer) {
