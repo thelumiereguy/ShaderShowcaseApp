@@ -17,7 +17,6 @@ import com.thelumiereguy.shadershowcase.features.app_entry_point.ui.screen.Shade
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             ShaderShowcaseTheme {

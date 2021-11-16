@@ -95,7 +95,7 @@ fun ShaderDetailOptionsBottomSheet(
                             )
                         }
 
-//                        if (!ShaderShowcaseWallpaperService.isRunning())
+                        if (!ShaderShowcaseWallpaperService.isRunning())
                             context.openLiveWallpaperChooser()
 //                            setSnackBarState(!snackBarVisibleState)
 
@@ -118,7 +118,7 @@ fun ShaderDetailOptionsBottomSheet(
 
             Spacer(
                 modifier = Modifier
-                    .height(10.dp)
+                    .height(40.dp)
                     .fillMaxWidth()
             )
         }

@@ -13,12 +13,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
 import com.thelumiereguy.shadershowcase.core.ui.theme.ShaderShowcaseTheme
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.composable.GLShader
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
-import com.thelumiereguy.shadershowcase.core.data.model.Shader
 
+@ExperimentalPagerApi
 @Composable
 fun ListingCard(shader: Shader, modifier: Modifier = Modifier) {
 
@@ -27,6 +29,8 @@ fun ListingCard(shader: Shader, modifier: Modifier = Modifier) {
             setShaders(
                 shader.fragmentShader,
                 shader.vertexShader,
+                "MainListing",
+                shader.title
             )
         }
     }
@@ -69,6 +73,7 @@ fun ListingCard(shader: Shader, modifier: Modifier = Modifier) {
     }
 }
 
+@ExperimentalPagerApi
 @Preview
 @Composable
 fun ListCardPreview() {

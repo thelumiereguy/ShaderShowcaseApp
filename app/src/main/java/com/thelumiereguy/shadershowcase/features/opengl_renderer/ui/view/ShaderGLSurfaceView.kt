@@ -4,7 +4,6 @@ import android.content.Context
 import android.opengl.GLSurfaceView
 import android.util.AttributeSet
 import timber.log.Timber
-import android.graphics.Bitmap
 
 
 class ShaderGLSurfaceView @JvmOverloads constructor(

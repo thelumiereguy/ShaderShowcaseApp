@@ -1,6 +1,5 @@
 package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable
 
-import android.os.Parcelable
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,16 +21,18 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.composable.GLShader
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 import kotlin.math.roundToInt
 
+@ExperimentalPagerApi
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
@@ -46,7 +47,7 @@ fun ShaderDetailPage(
         swipeableState.currentValue == 1
     }
 
-    val bottomSheetHeight = 200.dp
+    val bottomSheetHeight = 240.dp
 
     val sizePx = with(LocalDensity.current) { bottomSheetHeight.toPx() }
 
@@ -59,6 +60,8 @@ fun ShaderDetailPage(
             setShaders(
                 selectedShader.fragmentShader,
                 selectedShader.vertexShader,
+                "Detail Listing Page",
+                selectedShader.title
             )
         }
     }
@@ -71,8 +74,8 @@ fun ShaderDetailPage(
 
     val systemUiController = rememberSystemUiController()
 
-    LaunchedEffect(key1 = shaderRenderer, block = {
 
+    LaunchedEffect(key1 = shaderRenderer, block = {
         shaderRenderer.getButtonColorPair { buttonColorPair ->
             buttonColors = buttonColorPair
             val statusBarColor = Color(buttonColorPair.backgroundColor)
@@ -83,6 +86,8 @@ fun ShaderDetailPage(
             )
         }
     })
+
+    Timber.d("Recomposition Page ${selectedShader.title}")
 
     Box(
         modifier = modifier
@@ -96,7 +101,7 @@ fun ShaderDetailPage(
             renderer = shaderRenderer,
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
+                .fillMaxHeight(),
         )
 
         Column(
@@ -183,6 +188,7 @@ fun ShaderDetailPage(
 }
 
 
+@ExperimentalPagerApi
 @ExperimentalAnimationApi
 @OptIn(ExperimentalMaterialApi::class)
 @Preview

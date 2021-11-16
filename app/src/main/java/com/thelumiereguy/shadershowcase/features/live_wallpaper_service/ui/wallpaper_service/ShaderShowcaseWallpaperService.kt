@@ -52,17 +52,6 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
             lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         }
 
-        override fun onSurfaceChanged(
-            holder: SurfaceHolder?,
-            format: Int,
-            width: Int,
-            height: Int
-        ) {
-            super.onSurfaceChanged(holder, format, width, height)
-            if (!isPreview)
-                setSurfaceView(holder)
-        }
-
         private var selectedShader: Shader? = null
 
         private fun setSurfaceView(holder: SurfaceHolder?) {
@@ -90,7 +79,9 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
             if (shader != null) {
                 shaderRenderer?.setShaders(
                     shader.fragmentShader,
-                    shader.vertexShader
+                    shader.vertexShader,
+                    "LiveWallpaper",
+                    shader.title
                 )
             }
         }
@@ -99,7 +90,6 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     preferenceManager?.getSelectedShader()?.collect { index ->
-
                         val shadersList = ShaderFactory.getShadersList(applicationContext)
                         val newShader = shadersList[index]
                         selectedShader = newShader
@@ -132,6 +122,7 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
             super.onSurfaceDestroyed(holder)
             if (isPreview) {
                 stopSelf()
+                lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
                 glSurfaceView?.onPause()
                 glSurfaceView = null
                 shaderRenderer = null

@@ -10,18 +10,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.pager.*
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.material.math.MathUtils
 import com.thelumiereguy.shadershowcase.core.data.ShaderFactory
 import com.thelumiereguy.shadershowcase.core.data.model.Shader
@@ -36,16 +33,6 @@ import kotlin.math.absoluteValue
 @Composable
 fun ListingPage(onShaderSelected: (Shader) -> Unit) {
     ProvideWindowInsets {
-
-        val systemUiController = rememberSystemUiController()
-        val useDarkIcons = MaterialTheme.colors.isLight
-
-        SideEffect {
-            systemUiController.setSystemBarsColor(
-                color = Color.Transparent,
-                darkIcons = useDarkIcons
-            )
-        }
 
         val context = LocalContext.current
 
@@ -66,9 +53,11 @@ fun ListingPage(onShaderSelected: (Shader) -> Unit) {
                 key = { index -> shaders[index].title },
             ) { index ->
 
+
                 val shader = remember {
                     shaders[index]
                 }
+
 
                 ListingCard(
                     shader,

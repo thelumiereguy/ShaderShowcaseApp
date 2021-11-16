@@ -3,6 +3,7 @@ package com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer
 import android.graphics.Bitmap
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
+import android.os.Trace
 import androidx.palette.graphics.Palette
 import androidx.palette.graphics.Target
 import timber.log.Timber
@@ -54,17 +55,22 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
         glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST)
     }
 
-    private
-    val isProgramChanged = AtomicBoolean(false)
+    private val isProgramChanged = AtomicBoolean(false)
 
-    var programId: Int? = null
+    private var programId: Int? = null
 
     private lateinit var fragmentShader: String
     private lateinit var vertexShader: String
+    private lateinit var source: String
+    private lateinit var title: String
 
-    fun setShaders(fragmentShader: String, vertexShader: String) {
+
+    fun setShaders(fragmentShader: String, vertexShader: String, source: String, title: String) {
         this.fragmentShader = fragmentShader
         this.vertexShader = vertexShader
+        this.source = source
+        this.title = title
+        shouldPlay.compareAndSet(false, true)
         isProgramChanged.compareAndSet(false, true)
     }
 
@@ -139,66 +145,72 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
     private var frameCount = 0f
 
     override fun onDrawFrame(gl: GL10?) {
-        glDisable(GL10.GL_DITHER)
-        glClear(GL10.GL_COLOR_BUFFER_BIT)
+        if (shouldPlay.get()) {
+            Trace.beginSection("$source $title")
+            glDisable(GL10.GL_DITHER)
+            glClear(GL10.GL_COLOR_BUFFER_BIT)
 
 
-        if (isProgramChanged.getAndSet(false)) {
-            setupProgram()
-        } else {
-            programId?.let {
-                glUseProgram(it)
+            if (isProgramChanged.getAndSet(false)) {
+                setupProgram()
+            } else {
+                programId?.let {
+                    glUseProgram(it)
+                } ?: return
+            }
+
+            positionAttributeLocation?.let {
+                glEnableVertexAttribArray(it)
             } ?: return
-        }
-
-        positionAttributeLocation?.let {
-            glEnableVertexAttribArray(it)
-        } ?: return
 
 
-        resolutionUniformLocation?.let {
-            glUniform2f(it, surfaceWidth, surfaceHeight)
-        }
+            resolutionUniformLocation?.let {
+                glUniform2f(it, surfaceWidth, surfaceHeight)
+            }
 
-        timeUniformLocation?.let {
-            glUniform1f(it, frameCount)
-        }
+            timeUniformLocation?.let {
+                glUniform1f(it, frameCount)
+            }
 
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 6)
+            glDrawArrays(GL_TRIANGLE_FAN, 0, 6)
 
-        positionAttributeLocation?.let {
-            glDisableVertexAttribArray(it)
-        } ?: return
+            positionAttributeLocation?.let {
+                glDisableVertexAttribArray(it)
+            } ?: return
 
-        getPaletteCallback?.let { callback ->
-            if (surfaceWidth != 0f && surfaceHeight != 0f) {
-                getCurrentBitmap()?.let { bitmap ->
-                    Palette.Builder(bitmap)
-                        .maximumColorCount(6)
-                        .addTarget(Target.VIBRANT)
-                        .generate {
-                            it?.let { palette ->
-                                callback(palette)
-                                getPaletteCallback = null
-                                bitmap.recycle()
-                                glFinish()
+            getPaletteCallback?.let { callback ->
+                if (surfaceWidth != 0f && surfaceHeight != 0f) {
+
+                    getCurrentBitmap()?.let { bitmap ->
+
+                        Palette.Builder(bitmap)
+                            .maximumColorCount(6)
+                            .addTarget(Target.VIBRANT)
+                            .generate {
+                                it?.let { palette ->
+                                    callback(palette)
+                                    getPaletteCallback = null
+                                    bitmap.recycle()
+                                }
                             }
-                        }
+                    }
                 }
             }
-        } ?: kotlin.run {
-            glFinish()
-        }
 
-        if (frameCount > 30) {
-            frameCount = 0f
-        }
+//            glFinish()
 
-        frameCount += 0.01f
+            if (frameCount > 30) {
+                frameCount = 0f
+            }
+
+            frameCount += 0.01f
+
+            Trace.endSection()
+        }
     }
 
     private fun getCurrentBitmap(): Bitmap? {
-                val maxWidth = surfaceWidth.roundToInt()
+        val maxWidth = surfaceWidth.roundToInt()
         val maxHeight = surfaceHeight.roundToInt()
 
         val quarterWidth = maxWidth / 6
@@ -252,6 +264,16 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
 
     fun setPaletteCallback(callback: (Palette) -> Unit) {
         getPaletteCallback = callback
+    }
+
+    private val shouldPlay = AtomicBoolean(false)
+
+    fun onResume() {
+        shouldPlay.compareAndSet(false, ::fragmentShader.isInitialized)
+    }
+
+    fun onPause() {
+        shouldPlay.compareAndSet(true, false)
     }
 
 }

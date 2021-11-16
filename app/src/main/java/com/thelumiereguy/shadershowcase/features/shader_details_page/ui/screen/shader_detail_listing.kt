@@ -27,6 +27,7 @@ import com.thelumiereguy.shadershowcase.core.data.ShaderFactory
 import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable.ShaderDetailPage
 import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable.SwipeButtonRow
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
+import timber.log.Timber
 
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
@@ -34,19 +35,6 @@ import dev.chrisbanes.snapper.ExperimentalSnapperApi
 @ExperimentalMaterialApi
 @Composable
 fun ShaderDetailListing(selectedShaderId: Int, onBackPressed: () -> Unit) {
-
-//    val systemUiController = rememberSystemUiController()
-//    val useDarkIcons = MaterialTheme.colors.isLight
-//
-//    SideEffect {
-//        // Update all of the system bar colors to be transparent, and use
-//        // dark icons if we're in light theme
-//        systemUiController.setSystemBarsColor(
-//            color = Color.Transparent,
-//            darkIcons = useDarkIcons
-//        )
-//    }
-
     ProvideWindowInsets {
         Scaffold {
             val context = LocalContext.current
@@ -62,6 +50,8 @@ fun ShaderDetailListing(selectedShaderId: Int, onBackPressed: () -> Unit) {
             LaunchedEffect(key1 = selectedShaderId, block = {
                 pagerState.scrollToPage(selectedShaderId) // index is same as shader ID
             })
+
+            Timber.d("Recomposition Listing")
 
             Box(
                 modifier = Modifier
