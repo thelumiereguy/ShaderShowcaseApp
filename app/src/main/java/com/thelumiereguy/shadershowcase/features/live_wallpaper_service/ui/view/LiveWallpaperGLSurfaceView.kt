@@ -34,8 +34,8 @@ abstract class LiveWallpaperGLSurfaceView constructor(
     }
 
     override fun onPause() {
-        super.onPause()
         renderMode = RENDERMODE_WHEN_DIRTY
+        super.onPause()
         Timber.d("LiveWallpaperGLSurfaceView onPause")
     }
 

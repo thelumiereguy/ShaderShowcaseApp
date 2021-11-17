@@ -1,4 +1,4 @@
-package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable
+package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.helper
 
 import android.app.WallpaperManager
 import android.content.ComponentName
@@ -14,12 +14,6 @@ import kotlinx.coroutines.launch
 
 internal fun Context.openLiveWallpaperChooser() {
     Intent().let { intent ->
-//        intent.action = WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER
-//        startActivity(intent)
-
-        /**
-         * This one directly opens the Live wallpaper setter, but gave random issues with GLSurfaceview
-         */
         intent.action = WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER
         intent.putExtra(
             WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,

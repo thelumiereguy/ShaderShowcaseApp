@@ -18,11 +18,6 @@ class ShaderGLSurfaceView @JvmOverloads constructor(
 
         preserveEGLContextOnPause = true
 
-        /**
-         * To enable drawing only when needed.
-         * To redraw, use [requestRender]
-         */
-//        renderMode = RENDERMODE_WHEN_DIRTY
     }
 
     private var hasSetShader = false

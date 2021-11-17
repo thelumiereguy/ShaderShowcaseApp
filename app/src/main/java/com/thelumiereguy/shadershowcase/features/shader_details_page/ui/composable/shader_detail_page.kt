@@ -1,8 +1,6 @@
 package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -27,6 +25,8 @@ import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.composable.GLShader
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
+import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.helper.getButtonColorPair
+import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.helper.to
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.String

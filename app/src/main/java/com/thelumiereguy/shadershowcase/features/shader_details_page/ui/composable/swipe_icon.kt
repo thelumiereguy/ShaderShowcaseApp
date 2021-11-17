@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.thelumiereguy.shadershowcase.R
 import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
+import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.helper.map
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 

@@ -1,4 +1,4 @@
-package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable
+package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.helper
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

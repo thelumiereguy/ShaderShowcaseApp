@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.sp
 import com.thelumiereguy.shadershowcase.core.data.local.PreferenceManager
 import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service.ShaderShowcaseWallpaperService
+import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.helper.ButtonColorHolder
+import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.helper.openLiveWallpaperChooser
 import java.io.IOException
 
 @Composable
