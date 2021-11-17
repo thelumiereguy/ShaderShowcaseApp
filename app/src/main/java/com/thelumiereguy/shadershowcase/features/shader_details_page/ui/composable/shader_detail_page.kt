@@ -1,6 +1,8 @@
 package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -16,20 +18,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.composable.GLShader
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.String
 import kotlin.math.roundToInt
 
 @ExperimentalPagerApi
@@ -56,34 +56,34 @@ fun ShaderDetailPage(
     val coroutineScope = rememberCoroutineScope()
 
     val shaderRenderer = remember {
-        ShaderRenderer().apply {
-            setShaders(
-                selectedShader.fragmentShader,
-                selectedShader.vertexShader,
-                "Detail Listing Page",
-                selectedShader.title
-            )
-        }
+        ShaderRenderer()
     }
 
-    var buttonColors by rememberSaveable(
+    var buttonColorsPair by rememberSaveable(
         key = selectedShader.id.toString()
     ) {
         mutableStateOf(android.graphics.Color.BLACK to android.graphics.Color.WHITE)
     }
 
-    val systemUiController = rememberSystemUiController()
 
+    LaunchedEffect(key1 = selectedShader, block = {
+        shaderRenderer.setShaders(
+            selectedShader.fragmentShader,
+            selectedShader.vertexShader,
+            "Detail Listing Page",
+            selectedShader.title
+        )
 
-    LaunchedEffect(key1 = shaderRenderer, block = {
-        shaderRenderer.getButtonColorPair { buttonColorPair ->
-            buttonColors = buttonColorPair
-            val statusBarColor = Color(buttonColorPair.backgroundColor)
-
-            systemUiController.setSystemBarsColor(
-                color = statusBarColor,
-                statusBarColor.luminance() >= 0.5f
+        shaderRenderer.getButtonColorPair(coroutineScope) { buttonColorPair ->
+            Timber.d(
+                "Got color ${
+                    String.format(
+                        "#%06X",
+                        0xFFFFFF and buttonColorPair.backgroundColor
+                    )
+                }"
             )
+            buttonColorsPair = buttonColorPair
         }
     })
 
@@ -103,6 +103,7 @@ fun ShaderDetailPage(
                 .fillMaxWidth()
                 .fillMaxHeight(),
         )
+
 
         Column(
             modifier = Modifier
@@ -171,7 +172,7 @@ fun ShaderDetailPage(
 
             ShaderDetailOptionsBottomSheet(
                 selectedShader,
-                buttonColors,
+                buttonColorsPair,
                 modifier = Modifier.requiredHeight(bottomSheetHeight)
             )
 

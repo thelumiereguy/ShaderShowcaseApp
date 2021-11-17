@@ -66,6 +66,7 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
 
 
     fun setShaders(fragmentShader: String, vertexShader: String, source: String, title: String) {
+        Timber.d("setShaders  $title")
         this.fragmentShader = fragmentShader
         this.vertexShader = vertexShader
         this.source = source
@@ -180,18 +181,14 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
 
             getPaletteCallback?.let { callback ->
                 if (surfaceWidth != 0f && surfaceHeight != 0f) {
-
                     getCurrentBitmap()?.let { bitmap ->
-
                         Palette.Builder(bitmap)
                             .maximumColorCount(6)
                             .addTarget(Target.VIBRANT)
-                            .generate {
-                                it?.let { palette ->
-                                    callback(palette)
-                                    getPaletteCallback = null
-                                    bitmap.recycle()
-                                }
+                            .generate().let { palette ->
+                                callback(palette)
+                                getPaletteCallback = null
+                                bitmap.recycle()
                             }
                     }
                 }

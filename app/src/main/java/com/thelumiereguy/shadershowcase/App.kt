@@ -1,6 +1,7 @@
 package com.thelumiereguy.shadershowcase
 
 import android.app.Application
+import android.os.StrictMode
 import com.github.anrwatchdog.ANRWatchDog
 
 
@@ -9,15 +10,14 @@ class App : Application() {
     override fun onCreate() {
 //        if (BuildConfig.DEBUG) {
 //            StrictMode.setThreadPolicy(
-//                ThreadPolicy.Builder()
+//                StrictMode.ThreadPolicy.Builder()
 //                    .detectDiskReads()
 //                    .detectDiskWrites()
-//                    .detectNetwork() // or .detectAll() for all detectable problems
 //                    .penaltyLog()
 //                    .build()
 //            )
 //            StrictMode.setVmPolicy(
-//                VmPolicy.Builder()
+//                StrictMode.VmPolicy.Builder()
 //                    .detectLeakedSqlLiteObjects()
 //                    .detectLeakedClosableObjects()
 //                    .penaltyLog()

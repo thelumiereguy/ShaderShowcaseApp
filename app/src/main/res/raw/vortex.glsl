@@ -9,13 +9,14 @@ uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 
 void main(){
-    vec2 coord=gl_FragCoord.xy/u_resolution;
+    vec2 coord=(gl_FragCoord.xy/u_resolution)*2.-1.;
+
     vec3 color=vec3(0.);
 
     for (float index=1.;index<=10.;index++){
         float wave=smoothstep(
         coord.x,
-        (sin((coord.y*index)+u_time)*(coord.y*5.)*.1)+.5,
+        (sin((coord.y*index)+u_time)*(coord.y*8.)*.1),
         coord.x-.001
         );
         color+=wave;

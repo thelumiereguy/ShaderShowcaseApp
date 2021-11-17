@@ -22,26 +22,13 @@ import timber.log.Timber
 @ExperimentalMaterialApi
 @Composable
 fun SwipeButtonRow(
-    defaultIndex: Int,
-    pagerState: PagerState,
+    selectedIndex: Int,
     maxItems: Int,
     modifier: Modifier = Modifier,
-    onSwiped: suspend (newPageIndex: Int) -> Unit
+    onSwiped:  (newPageIndex: Int) -> Unit
 ) {
 
     val coroutineScope = rememberCoroutineScope()
-
-    var selectedPage by remember {
-        mutableStateOf(
-            defaultIndex
-        )
-    }
-
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collectLatest { page ->
-            selectedPage = page
-        }
-    }
 
     Row(
         modifier = modifier
@@ -54,7 +41,7 @@ fun SwipeButtonRow(
                 .padding(start = 16.dp)
                 .size(36.dp)
         ) {
-            if (selectedPage != 0) {
+            if (selectedIndex != 0) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_left_arrow),
                     contentDescription = "Slide left",
@@ -62,7 +49,7 @@ fun SwipeButtonRow(
                         .fillMaxSize()
                         .clickable {
                             coroutineScope.launch {
-                                onSwiped(--selectedPage)
+                                onSwiped(selectedIndex - 1)
                             }
                         }
                 )
@@ -75,7 +62,7 @@ fun SwipeButtonRow(
                 .padding(end = 16.dp)
                 .size(36.dp)
         ) {
-            if (selectedPage != maxItems - 1) {
+            if (selectedIndex != maxItems - 1) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_left_arrow),
                     contentDescription = "Slide right",
@@ -83,7 +70,7 @@ fun SwipeButtonRow(
                         .fillMaxSize()
                         .clickable {
                             coroutineScope.launch {
-                                onSwiped(++selectedPage)
+                                onSwiped(selectedIndex + 1)
                             }
                         }
                         .rotate(

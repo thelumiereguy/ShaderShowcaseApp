@@ -60,37 +60,37 @@ object ShaderFactory {
             ),
             Shader(
                 6,
+                title = "Vortex",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.vortex),
+                vertexShader = vertexShader
+            ),
+            Shader(
+                7,
                 title = "Digital DNA",
                 description = description,
                 fragmentShader = context.readTextFileFromResource(R.raw.dna),
                 vertexShader = vertexShader
             ),
             Shader(
-                7,
+                8,
                 title = "Hypnotising Spiral",
                 description = description,
                 fragmentShader = context.readTextFileFromResource(R.raw.hypnotising_spiral),
                 vertexShader = vertexShader
             ),
             Shader(
-                8,
+                9,
                 title = "Monochrome Iris",
                 description = description,
                 fragmentShader = context.readTextFileFromResource(R.raw.monochrome_iris),
                 vertexShader = vertexShader
             ),
             Shader(
-                9,
+                10,
                 title = "Raining shurikens",
                 description = description,
                 fragmentShader = context.readTextFileFromResource(R.raw.shuriken_rain),
-                vertexShader = vertexShader
-            ),
-            Shader(
-                10,
-                title = "Vortex",
-                description = description,
-                fragmentShader = context.readTextFileFromResource(R.raw.vortex),
                 vertexShader = vertexShader
             ),
             Shader(

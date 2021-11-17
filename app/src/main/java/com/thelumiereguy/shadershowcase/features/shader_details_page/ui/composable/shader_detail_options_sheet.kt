@@ -1,5 +1,7 @@
 package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -24,6 +26,16 @@ fun ShaderDetailOptionsBottomSheet(
     buttonColors: ButtonColorHolder,
     modifier: Modifier = Modifier
 ) {
+
+    val buttonBackgroundColor = animateColorAsState(
+        Color(buttonColors.backgroundColor),
+        animationSpec = tween(500)
+    )
+
+    val buttonTextColor = animateColorAsState(
+        Color(buttonColors.textColor),
+        animationSpec = tween(500)
+    )
 
     val context = LocalContext.current
 
@@ -81,7 +93,7 @@ fun ShaderDetailOptionsBottomSheet(
 
             Button(
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(buttonColors.backgroundColor),
+                    backgroundColor = buttonBackgroundColor.value,
                 ),
                 border = BorderStroke(
                     0.5.dp,
@@ -111,7 +123,7 @@ fun ShaderDetailOptionsBottomSheet(
             ) {
                 Text(
                     text = "Set as Live Wallpaper",
-                    color = Color(buttonColors.textColor),
+                    color = buttonTextColor.value,
                     fontWeight = FontWeight.Bold
                 )
             }

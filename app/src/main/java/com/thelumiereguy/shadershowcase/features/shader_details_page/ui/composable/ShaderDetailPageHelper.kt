@@ -4,9 +4,13 @@ import android.app.WallpaperManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import androidx.compose.ui.graphics.Color
+import android.graphics.Color
+import androidx.palette.graphics.Palette
 import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service.ShaderShowcaseWallpaperService
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 internal fun Context.openLiveWallpaperChooser() {
     Intent().let { intent ->
@@ -39,16 +43,29 @@ internal fun map(
 }
 
 internal fun ShaderRenderer.getButtonColorPair(
+    coroutineScope: CoroutineScope,
     callback: (ButtonColorHolder) -> Unit
 ) {
-    setPaletteCallback { palette ->
-        (palette.lightVibrantSwatch ?: palette.lightMutedSwatch ?: palette.dominantSwatch
-        ?: palette.vibrantSwatch
-        ?: palette.darkVibrantSwatch)?.let { swatch ->
-            val buttonBackgroundColor = swatch.rgb
-            val buttonTextColor = swatch.bodyTextColor
-            callback(ButtonColorHolder(buttonBackgroundColor, buttonTextColor))
+    coroutineScope.launch {
+        delay(500)
+        setPaletteCallback { palette ->
+            getColor(palette, callback)
         }
+    }
+}
+
+private fun getColor(
+    palette: Palette,
+    callback: (ButtonColorHolder) -> Unit
+) {
+    (palette.lightVibrantSwatch ?: palette.lightMutedSwatch ?: palette.dominantSwatch
+    ?: palette.vibrantSwatch
+    ?: palette.darkVibrantSwatch)?.let { swatch ->
+        val buttonBackgroundColor = swatch.rgb
+        val buttonTextColor = swatch.bodyTextColor
+        callback(ButtonColorHolder(buttonBackgroundColor, buttonTextColor))
+    } ?: run {
+        callback(ButtonColorHolder(Color.BLACK, Color.WHITE))
     }
 }
 
