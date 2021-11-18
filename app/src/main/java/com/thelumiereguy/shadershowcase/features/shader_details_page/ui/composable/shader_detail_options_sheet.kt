@@ -5,16 +5,15 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.thelumiereguy.shadershowcase.core.data.local.PreferenceManager
 import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service.ShaderShowcaseWallpaperService
@@ -33,6 +32,17 @@ fun ShaderDetailOptionsBottomSheet(
         Color(buttonColors.backgroundColor),
         animationSpec = tween(500)
     )
+
+    val systemUiController = rememberSystemUiController()
+
+    LaunchedEffect(key1 = buttonBackgroundColor.value) {
+        val shouldUseDarkIcons = buttonBackgroundColor.value.luminance() >= 0.5f
+        systemUiController.setStatusBarColor(
+            buttonBackgroundColor.value,
+            shouldUseDarkIcons
+        )
+    }
+
 
     val buttonTextColor = animateColorAsState(
         Color(buttonColors.textColor),

@@ -29,8 +29,7 @@ fun ListingCard(shader: Shader, modifier: Modifier = Modifier) {
             setShaders(
                 shader.fragmentShader,
                 shader.vertexShader,
-                "MainListing",
-                shader.title
+                "MainListing ${shader.title}"
             )
         }
     }

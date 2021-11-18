@@ -80,8 +80,7 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
                 shaderRenderer?.setShaders(
                     shader.fragmentShader,
                     shader.vertexShader,
-                    "LiveWallpaper",
-                    shader.title
+                    "LiveWallpaper ${shader.title}"
                 )
             }
         }

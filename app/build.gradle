@@ -36,7 +36,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -78,7 +78,7 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.4.0'
 
     implementation("androidx.startup:startup-runtime:$versions.startupVersion")
-
+    implementation 'com.github.thelumiereguy:CrashWatcher-Android:1.8'
 
     implementation "androidx.navigation:navigation-compose:$versions.composeNavVersion"
 

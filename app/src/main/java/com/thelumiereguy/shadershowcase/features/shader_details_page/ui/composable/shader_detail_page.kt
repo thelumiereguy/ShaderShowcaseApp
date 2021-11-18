@@ -28,8 +28,6 @@ import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.Sha
 import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.helper.getButtonColorPair
 import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.helper.to
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.lang.String
 import kotlin.math.roundToInt
 
 @ExperimentalPagerApi
@@ -38,7 +36,7 @@ import kotlin.math.roundToInt
 @Composable
 fun ShaderDetailPage(
     selectedShader: Shader,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
 
     val swipeableState = rememberSwipeableState(0)
@@ -62,7 +60,11 @@ fun ShaderDetailPage(
     var buttonColorsPair by rememberSaveable(
         key = selectedShader.id.toString()
     ) {
-        mutableStateOf(android.graphics.Color.BLACK to android.graphics.Color.WHITE)
+        mutableStateOf(
+            android.graphics.Color.BLACK
+                    to
+                    android.graphics.Color.WHITE
+        )
     }
 
 
@@ -70,24 +72,13 @@ fun ShaderDetailPage(
         shaderRenderer.setShaders(
             selectedShader.fragmentShader,
             selectedShader.vertexShader,
-            "Detail Listing Page",
-            selectedShader.title
+            "Detail Listing Page ${selectedShader.title}"
         )
 
         shaderRenderer.getButtonColorPair(coroutineScope) { buttonColorPair ->
-            Timber.d(
-                "Got color ${
-                    String.format(
-                        "#%06X",
-                        0xFFFFFF and buttonColorPair.backgroundColor
-                    )
-                }"
-            )
             buttonColorsPair = buttonColorPair
         }
     })
-
-    Timber.d("Recomposition Page ${selectedShader.title}")
 
     Box(
         modifier = modifier

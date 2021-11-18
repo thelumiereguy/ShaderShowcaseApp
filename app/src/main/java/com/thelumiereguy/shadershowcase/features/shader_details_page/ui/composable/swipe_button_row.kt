@@ -25,20 +25,25 @@ fun SwipeButtonRow(
     selectedIndex: Int,
     maxItems: Int,
     modifier: Modifier = Modifier,
-    onSwiped:  (newPageIndex: Int) -> Unit
+    onSwiped: (newPageIndex: Int) -> Unit
 ) {
 
     val coroutineScope = rememberCoroutineScope()
 
     Row(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(
+                bottom = 24.dp
+            ),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
         Box(
             modifier = Modifier
-                .padding(start = 16.dp)
+                .padding(
+                    start = 16.dp
+                )
                 .size(36.dp)
         ) {
             if (selectedIndex != 0) {

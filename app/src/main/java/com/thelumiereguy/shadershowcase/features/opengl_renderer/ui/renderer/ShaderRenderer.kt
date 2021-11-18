@@ -18,14 +18,12 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
 
     private val positionComponentCount = 2
 
-    private val tableVertices by lazy {
+    private val quadVertices by lazy {
         floatArrayOf(
-            0f, 0f,
-            -1f, -1f,
-            1f, -1f,
-            1f, 1f,
             -1f, 1f,
-            -1f, -1f
+            1f, 1f,
+            -1f, -1f,
+            1f, -1f
         )
     }
 
@@ -35,9 +33,9 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
     private val bytesPerFloat = 4
 
     private val verticesData by lazy {
-        ByteBuffer.allocateDirect(tableVertices.size * bytesPerFloat)
+        ByteBuffer.allocateDirect(quadVertices.size * bytesPerFloat)
             .order(ByteOrder.nativeOrder()).asFloatBuffer().also {
-                it.put(tableVertices)
+                it.put(quadVertices)
             }
     }
 
@@ -61,16 +59,12 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
 
     private lateinit var fragmentShader: String
     private lateinit var vertexShader: String
-    private lateinit var source: String
-    private lateinit var title: String
+    private lateinit var eventSource: String
 
-
-    fun setShaders(fragmentShader: String, vertexShader: String, source: String, title: String) {
-        Timber.d("setShaders  $title")
+    fun setShaders(fragmentShader: String, vertexShader: String, source: String) {
         this.fragmentShader = fragmentShader
         this.vertexShader = vertexShader
-        this.source = source
-        this.title = title
+        this.eventSource = source
         shouldPlay.compareAndSet(false, true)
         isProgramChanged.compareAndSet(false, true)
     }
@@ -147,7 +141,7 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
 
     override fun onDrawFrame(gl: GL10?) {
         if (shouldPlay.get()) {
-            Trace.beginSection("$source $title")
+            Trace.beginSection(eventSource)
             glDisable(GL10.GL_DITHER)
             glClear(GL10.GL_COLOR_BUFFER_BIT)
 
@@ -173,7 +167,7 @@ open class ShaderRenderer : GLSurfaceView.Renderer {
                 glUniform1f(it, frameCount)
             }
 
-            glDrawArrays(GL_TRIANGLE_FAN, 0, 6)
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
 
             positionAttributeLocation?.let {
                 glDisableVertexAttribArray(it)
