@@ -20,5 +20,5 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class com.thelumiereguy.shadershowcase.features.shader_details_page.ui.helper.ButtonColorHolder { *; }
+-keep class com.thelumiereguy.shadershowcase.features.shader_details_page.presentation.ButtonColorHolder { *; }
 -keep class com.thelumiereguy.shadershowcase.core.data.model.Shader { *; }

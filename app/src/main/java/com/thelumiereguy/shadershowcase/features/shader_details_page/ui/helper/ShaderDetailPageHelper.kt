@@ -8,21 +8,27 @@ import android.graphics.Color
 import androidx.palette.graphics.Palette
 import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service.ShaderShowcaseWallpaperService
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
+import com.thelumiereguy.shadershowcase.features.shader_details_page.presentation.ButtonColorHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 internal fun Context.openLiveWallpaperChooser() {
-    Intent().let { intent ->
-        intent.action = WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER
-        intent.putExtra(
-            WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
-            ComponentName(
-                this,
-                ShaderShowcaseWallpaperService::class.java
+    try {
+        Intent().let { intent ->
+            intent.action = WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER
+            intent.putExtra(
+                WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+                ComponentName(
+                    this,
+                    ShaderShowcaseWallpaperService::class.java
+                )
             )
-        )
-        startActivity(intent)
+            startActivity(intent)
+        }
+    } catch (e: IOException) {
+        e.printStackTrace()
     }
 }
 
@@ -61,8 +67,4 @@ private fun getColor(
     } ?: run {
         callback(ButtonColorHolder(Color.BLACK, Color.WHITE))
     }
-}
-
-internal infix fun Int.to(textColor: Int): ButtonColorHolder {
-    return ButtonColorHolder(this, textColor)
 }

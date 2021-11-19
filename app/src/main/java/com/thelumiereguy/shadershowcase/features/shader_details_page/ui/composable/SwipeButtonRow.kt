@@ -1,21 +1,22 @@
 package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
 import com.thelumiereguy.shadershowcase.R
-import kotlinx.coroutines.flow.collectLatest
+import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 @ExperimentalPagerApi
@@ -52,11 +53,16 @@ fun SwipeButtonRow(
                     contentDescription = "Slide left",
                     modifier = Modifier
                         .fillMaxSize()
+                        .border(
+                            border = BorderStroke(1.dp, PrimaryTextColor.copy(alpha = 0.5f)),
+                            shape = RoundedCornerShape(18.dp)
+                        )
                         .clickable {
                             coroutineScope.launch {
                                 onSwiped(selectedIndex - 1)
                             }
-                        }
+                        },
+                    tint = PrimaryTextColor
                 )
             }
         }
@@ -73,6 +79,10 @@ fun SwipeButtonRow(
                     contentDescription = "Slide right",
                     modifier = Modifier
                         .fillMaxSize()
+                        .border(
+                            border = BorderStroke(1.dp, PrimaryTextColor.copy(alpha = 0.5f)),
+                            shape = RoundedCornerShape(18.dp)
+                        )
                         .clickable {
                             coroutineScope.launch {
                                 onSwiped(selectedIndex + 1)
@@ -80,7 +90,8 @@ fun SwipeButtonRow(
                         }
                         .rotate(
                             180f
-                        )
+                        ),
+                    tint = PrimaryTextColor
                 )
             }
         }

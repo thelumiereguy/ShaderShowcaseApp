@@ -1,4 +1,4 @@
-package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable
+package com.thelumiereguy.shadershowcase.features.shader_details_page.ui.screen
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
@@ -25,8 +25,10 @@ import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import com.thelumiereguy.shadershowcase.core.ui.theme.PrimaryTextColor
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.composable.GLShader
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
+import com.thelumiereguy.shadershowcase.features.shader_details_page.presentation.to
+import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable.ShaderDetailOptionsBottomSheet
+import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.composable.SwipeIcon
 import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.helper.getButtonColorPair
-import com.thelumiereguy.shadershowcase.features.shader_details_page.ui.helper.to
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

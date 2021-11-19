@@ -37,12 +37,13 @@ import kotlin.math.absoluteValue
 fun ListingPage(onShaderSelected: (Shader) -> Unit) {
     ProvideWindowInsets {
 
+        val backgroundColor = MaterialTheme.colors.background
 
         val systemUiController = rememberSystemUiController()
 
         SideEffect {
             systemUiController.setStatusBarColor(
-                Color.Transparent,
+                backgroundColor,
             )
         }
 

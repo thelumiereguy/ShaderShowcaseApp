@@ -1,6 +1,8 @@
 package com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service
 
 import android.app.ActivityManager
+import android.app.WallpaperManager
+import android.content.Context
 import android.opengl.GLSurfaceView
 import android.service.wallpaper.WallpaperService
 import android.view.SurfaceHolder
@@ -14,18 +16,20 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+
 class ShaderShowcaseWallpaperService : WallpaperService() {
 
     companion object {
-        private var wallpaperEngine: WallpaperEngine? = null
+        fun isRunning(context: Context): Boolean {
+            val wpm = WallpaperManager.getInstance(context)
+            val info = wpm.wallpaperInfo
 
-        fun isRunning() = wallpaperEngine != null
+            return (info != null && info.packageName == context.packageName)
+        }
     }
 
     override fun onCreateEngine(): Engine {
-        return WallpaperEngine().also { engineInstance ->
-            wallpaperEngine = engineInstance
-        }
+        return WallpaperEngine()
     }
 
     inner class WallpaperEngine : WallpaperService.Engine(), LifecycleOwner {
@@ -125,7 +129,6 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
                 glSurfaceView?.onPause()
                 glSurfaceView = null
                 shaderRenderer = null
-                wallpaperEngine = null
                 preferenceManager?.release()
             }
         }
@@ -137,7 +140,6 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
             glSurfaceView?.onDestroy()
             glSurfaceView = null
             shaderRenderer = null
-            wallpaperEngine = null
             preferenceManager?.release()
         }
 

@@ -24,11 +24,9 @@ class PreferenceManager(private var context: Context?) {
         } ?: flowOf(0)
     }
 
-    fun CoroutineScope.setSelectedShader(shaderId: Int) {
-        launch {
-            context?.dataStore?.edit {
-                it[selectedShaderIdPreference] = shaderId
-            }
+    suspend fun setSelectedShader(shaderId: Int) {
+        context?.dataStore?.edit {
+            it[selectedShaderIdPreference] = shaderId
         }
     }
 
