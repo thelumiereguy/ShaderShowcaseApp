@@ -1,6 +1,7 @@
 package com.thelumiereguy.shadershowcase.core.data.local
 
 import android.content.Context
+import android.os.Build
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -17,14 +18,23 @@ class PreferenceManager(private var context: Context?) {
 
     private val selectedShaderIdPreference = intPreferencesKey(selectedShaderId)
 
+    private val appContext: Context?
+        get() {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                context?.createDeviceProtectedStorageContext()
+            } else {
+                context
+            }
+        }
+
     fun getSelectedShader(): Flow<Int>? {
-        return context?.dataStore?.data?.map {
+        return appContext?.dataStore?.data?.map {
             it[selectedShaderIdPreference] ?: 0
         }
     }
 
     suspend fun setSelectedShader(shaderId: Int) {
-        context?.dataStore?.edit {
+        appContext?.dataStore?.edit {
             it[selectedShaderIdPreference] = shaderId
         }
     }
