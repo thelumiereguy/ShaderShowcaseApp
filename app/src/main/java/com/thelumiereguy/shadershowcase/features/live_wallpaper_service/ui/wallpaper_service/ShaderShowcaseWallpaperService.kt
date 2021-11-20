@@ -13,6 +13,8 @@ import com.thelumiereguy.shadershowcase.core.data.model.Shader
 import com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.view.LiveWallpaperGLSurfaceView
 import com.thelumiereguy.shadershowcase.features.opengl_renderer.ui.renderer.ShaderRenderer
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -23,8 +25,7 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
         fun isRunning(context: Context): Boolean {
             val wpm = WallpaperManager.getInstance(context)
             val info = wpm.wallpaperInfo
-
-            return (info != null && info.packageName == context.packageName)
+            return info != null && info.packageName == context.packageName
         }
     }
 
@@ -92,16 +93,19 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
         private fun observeSelectedShaderChanges() {
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    preferenceManager?.getSelectedShader()?.collect { index ->
-                        val shadersList = ShaderFactory.getShadersList(applicationContext)
-                        val newShader = shadersList[index]
-                        selectedShader = newShader
-                        glSurfaceView ?: kotlin.run {
-                            Timber.d("SurfaceView is null. Initializing it")
-                            setSurfaceView(surfaceHolder)
-                        }
-                        setShaderToRenderer()
-                    }
+                    preferenceManager?.getSelectedShader()
+                        ?.filter {
+                            it != -1
+                        }?.onEach { index ->
+                            val shadersList = ShaderFactory.getShadersList(applicationContext)
+                            val newShader = shadersList[index]
+                            selectedShader = newShader
+                            glSurfaceView ?: kotlin.run {
+                                Timber.d("SurfaceView is null. Initializing it")
+                                setSurfaceView(surfaceHolder)
+                            }
+                            setShaderToRenderer()
+                        }?.collect()
                 }
             }
         }

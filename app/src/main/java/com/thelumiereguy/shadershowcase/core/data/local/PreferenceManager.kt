@@ -6,9 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "wallpaper_preferences")
 
@@ -18,10 +17,10 @@ class PreferenceManager(private var context: Context?) {
 
     private val selectedShaderIdPreference = intPreferencesKey(selectedShaderId)
 
-    fun getSelectedShader(): Flow<Int> {
+    fun getSelectedShader(): Flow<Int>? {
         return context?.dataStore?.data?.map {
             it[selectedShaderIdPreference] ?: 0
-        } ?: flowOf(0)
+        }
     }
 
     suspend fun setSelectedShader(shaderId: Int) {
@@ -33,6 +32,4 @@ class PreferenceManager(private var context: Context?) {
     fun release() {
         context = null
     }
-
-
 }

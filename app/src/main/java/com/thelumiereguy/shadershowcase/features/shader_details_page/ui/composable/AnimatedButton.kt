@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -45,7 +46,7 @@ fun AnimatedButton(
         PreferenceManager(context)
     }
 
-    val selectedShader = preferenceManager.getSelectedShader().collectAsState(initial = -1)
+    val selectedShader = preferenceManager.getSelectedShader()?.collectAsState(initial = -1)
 
     val buttonBackgroundColor = animateColorAsState(
         Color(buttonColors.backgroundColor),
@@ -89,46 +90,21 @@ fun AnimatedButton(
     /**
      * Logic for deriving button state
      */
-    LaunchedEffect(key1 = shaderId, key2 = selectedShader.value, key3 = wallpaperServiceRunning) {
+    LaunchedEffect(key1 = shaderId, key2 = selectedShader?.value, key3 = wallpaperServiceRunning) {
         buttonState = ButtonState(
-            showSuccessText = selectedShader.value == shaderId && wallpaperServiceRunning
+            showSuccessText = selectedShader?.value == shaderId && wallpaperServiceRunning
         )
     }
 
-    val transition =
-        updateTransition(
-            targetState = buttonState,
-            label = "Button Alpha and size transition"
+    val buttonWidthAlphaProperty by animateFloatAsState(
+        targetValue = if (buttonState.showLoading)
+            0f
+        else
+            1f,
+        animationSpec = tween(
+            600,
+            easing = FastOutSlowInEasing
         )
-
-    val buttonAlpha by transition.animateFloat(
-        transitionSpec = {
-            tween(
-                400,
-                easing = FastOutSlowInEasing
-            )
-        },
-        targetValueByState = { state ->
-            if (state.showLoading)
-                0f
-            else
-                1f
-        }, label = "Alpha"
-    )
-
-    val buttonWidth by transition.animateDp(
-        transitionSpec = {
-            tween(
-                400,
-                easing = FastOutSlowInEasing
-            )
-        },
-        targetValueByState = { state ->
-            if (state.showLoading)
-                0.dp
-            else
-                270.dp
-        }, label = "Width"
     )
 
 
@@ -139,7 +115,11 @@ fun AnimatedButton(
 
         Button(
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = buttonBackgroundColor.value,
+                backgroundColor = buttonBackgroundColor.value.copy(
+                    alpha = if (buttonState.showSuccessText) {
+                        0.8f
+                    } else 1f
+                ),
             ),
             border = BorderStroke(
                 0.5.dp,
@@ -162,8 +142,8 @@ fun AnimatedButton(
             modifier = Modifier
                 .padding(all = 8.dp)
                 .requiredHeight(48.dp)
-                .alpha(buttonAlpha)
-                .width(buttonWidth)
+                .alpha(buttonWidthAlphaProperty)
+                .fillMaxWidth(buttonWidthAlphaProperty)
 
         ) {
 
@@ -172,7 +152,9 @@ fun AnimatedButton(
                     Text(
                         text = "Set as Live Wallpaper",
                         color = buttonTextColor.value,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
                 buttonState.showSuccessText -> {
@@ -190,7 +172,9 @@ fun AnimatedButton(
                     Text(
                         text = "Wallpaper Set",
                         color = buttonTextColor.value,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }

@@ -8,6 +8,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.thelumiereguy.shadershowcase.R
 import com.thelumiereguy.shadershowcase.core.ui.theme.ShaderShowcaseTheme
 import com.thelumiereguy.shadershowcase.features.app_entry_point.ui.screen.ShadersShowcaseApp
 
@@ -16,6 +17,7 @@ import com.thelumiereguy.shadershowcase.features.app_entry_point.ui.screen.Shade
 @ExperimentalMaterialApi
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_ShaderShowcase)
         super.onCreate(savedInstanceState)
         setContent {
             ShaderShowcaseTheme {

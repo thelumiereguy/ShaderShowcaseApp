@@ -46,9 +46,9 @@ object ShaderFactory {
             ),
             Shader(
                 4,
-                title = "Polka Shade",
+                title = "Jelly Springs",
                 description = description,
-                fragmentShader = context.readTextFileFromResource(R.raw.polka_shade),
+                fragmentShader = context.readTextFileFromResource(R.raw.jelly_springs),
                 vertexShader = vertexShader
             ),
             Shader(
@@ -60,48 +60,55 @@ object ShaderFactory {
             ),
             Shader(
                 6,
+                title = "Polka Shade",
+                description = description,
+                fragmentShader = context.readTextFileFromResource(R.raw.polka_shade),
+                vertexShader = vertexShader
+            ),
+            Shader(
+                7,
                 title = "Vortex",
                 description = description,
                 fragmentShader = context.readTextFileFromResource(R.raw.vortex),
                 vertexShader = vertexShader
             ),
             Shader(
-                7,
+                8,
                 title = "Digital DNA",
                 description = description,
                 fragmentShader = context.readTextFileFromResource(R.raw.dna),
                 vertexShader = vertexShader
             ),
             Shader(
-                8,
+                9,
                 title = "Hypnotising Spiral",
                 description = description,
                 fragmentShader = context.readTextFileFromResource(R.raw.hypnotising_spiral),
                 vertexShader = vertexShader
             ),
             Shader(
-                9,
+                10,
                 title = "Monochrome Iris",
                 description = description,
                 fragmentShader = context.readTextFileFromResource(R.raw.monochrome_iris),
                 vertexShader = vertexShader
             ),
             Shader(
-                10,
+                11,
                 title = "Raining shurikens",
                 description = description,
                 fragmentShader = context.readTextFileFromResource(R.raw.shuriken_rain),
                 vertexShader = vertexShader
             ),
             Shader(
-                11,
+                12,
                 title = "Warped Memories",
                 description = description,
                 fragmentShader = context.readTextFileFromResource(R.raw.warped_memories),
                 vertexShader = vertexShader
             ),
             Shader(
-                12,
+                13,
                 title = "Monochrome Ratio",
                 description = description,
                 fragmentShader = context.readTextFileFromResource(R.raw.monochrome_ratio),
