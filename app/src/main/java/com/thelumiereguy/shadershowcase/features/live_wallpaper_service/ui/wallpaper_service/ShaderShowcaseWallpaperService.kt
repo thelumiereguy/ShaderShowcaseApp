@@ -1,11 +1,15 @@
 package com.thelumiereguy.shadershowcase.features.live_wallpaper_service.ui.wallpaper_service
 
 import android.app.ActivityManager
+import android.app.WallpaperColors
 import android.app.WallpaperManager
 import android.content.Context
+import android.graphics.Color
 import android.opengl.GLSurfaceView
+import android.os.Build
 import android.service.wallpaper.WallpaperService
 import android.view.SurfaceHolder
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
 import com.thelumiereguy.shadershowcase.core.data.ShaderFactory
 import com.thelumiereguy.shadershowcase.core.data.local.PreferenceManager
@@ -155,5 +159,11 @@ class ShaderShowcaseWallpaperService : WallpaperService() {
         private val lifecycleRegistry = LifecycleRegistry(this)
 
         override fun getLifecycle(): Lifecycle = lifecycleRegistry
+
+        @RequiresApi(api = Build.VERSION_CODES.O_MR1)
+        override fun onComputeColors(): WallpaperColors {
+            val color = Color.valueOf(Color.BLACK)
+            return WallpaperColors(color, color, color)
+        }
     }
 }
