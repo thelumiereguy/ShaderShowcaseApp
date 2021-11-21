@@ -15,6 +15,14 @@ _*Minimum requirement is OpenGL 2.0._
 
 <br />
 
+## Features
+- List of included Shaders rendered in realtime
+- A detail page to show more options regarding the Shader
+- Set the Shader as Live Wallpaper
+- UI palette of Detail Page components is computed dynamically using Androidx Palette API
+
+<br />
+
 ## Screenshots
 
 ### 🌞 Light Mode
@@ -34,14 +42,6 @@ _*Minimum requirement is OpenGL 2.0._
 |   Splash    | Shader Listing Page 
 |---	|---
 |  ![](https://github.com/thelumiereguy/ShaderShowcaseApp/blob/master/screenshots/dark_splash.png)    |  ![](https://github.com/thelumiereguy/ShaderShowcaseApp/blob/master/screenshots/home_dark.png)   
-
-<br />
-
-## Features
-- List of included Shaders rendered in realtime
-- A detail page to show more options regarding the Shader
-- Set the Shader as Live Wallpaper
-- UI palette of Detail Page components is computed dynamically using Androidx Palette API
 
 <br />
 
