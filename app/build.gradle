@@ -3,6 +3,8 @@ plugins {
     id 'kotlin-android'
     id("kotlin-parcelize")
 }
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 apply from: '../dependencies.gradle'
 
@@ -36,12 +38,13 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            signingConfig signingConfigs.release
+
         }
     }
     compileOptions {
@@ -92,8 +95,6 @@ dependencies {
     // If using indicators, also depend on
     implementation "com.google.accompanist:accompanist-pager-indicators:$versions.accompanistVersion"
 
-    implementation 'com.github.anrwatchdog:anrwatchdog:1.4.0'
-
     implementation "com.jakewharton.timber:timber:$versions.timberVersion"
 
     testImplementation 'junit:junit:4.+'
@@ -105,4 +106,8 @@ dependencies {
     implementation 'androidx.palette:palette-ktx:1.0.0'
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation platform('com.google.firebase:firebase-bom:29.0.0')
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 }

@@ -1,9 +1,6 @@
 package com.thelumiereguy.shadershowcase
 
 import android.app.Application
-import android.os.StrictMode
-import com.github.anrwatchdog.ANRWatchDog
-
 
 class App : Application() {
 
@@ -24,7 +21,6 @@ class App : Application() {
 //                    .build()
 //            )
 //        }
-//        ANRWatchDog().start()
         super.onCreate()
     }
 }

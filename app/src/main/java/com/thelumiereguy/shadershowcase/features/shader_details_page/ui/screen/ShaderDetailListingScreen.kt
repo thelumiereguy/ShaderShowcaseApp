@@ -54,10 +54,6 @@ fun ShaderDetailListing(selectedShaderId: Int, onBackPressed: () -> Unit) {
                 )
             }
 
-            var offset by remember {
-                mutableStateOf(0)
-            }
-
             Box(
                 modifier = Modifier
                     .fillMaxSize(),
