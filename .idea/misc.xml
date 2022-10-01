@@ -11,10 +11,11 @@
         <entry key="..\:/AndroidStudioProjects/ShaderShowcase/app/src/main/res/drawable/ic_splash_background.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/ShaderShowcase/app/src/main/res/drawable/ic_splash_logo.xml" value="0.216" />
         <entry key="..\:/AndroidStudioProjects/ShaderShowcase/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.216" />
+        <entry key="app/src/main/java/com/thelumiereguy/shadershowcase/features/app_entry_point/ui/screen/ShadersShowcaseApp.kt" value="0.6716666666666666" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_16_PREVIEW" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
